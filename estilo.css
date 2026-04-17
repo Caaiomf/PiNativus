@@ -79,7 +79,7 @@ button:hover {
 
 }
 .titulo{
-  background-image: url(WhatsApp\ Image\ 2025-08-25\ at\ 16.41.08.jpeg);
+  background-image: url(/imagens/Design_sem_nome.png);
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
@@ -87,4 +87,17 @@ button:hover {
 
 table{
   width: 80%;
+}
+
+.card-header img { height: 48px; margin-bottom: 6px; }
+.card-header h1 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.card-header p {
+  color: rgba(255,255,255,0.75);
+  font-size: 12px;
+  margin-top: 2px;
 }

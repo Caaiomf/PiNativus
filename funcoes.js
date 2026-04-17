@@ -165,7 +165,7 @@ function renderizarCarrinho() {
   const carrinho = getCarrinho();
   lista.innerHTML = '';
   if (carrinho.length === 0) {
-    lista.innerHTML = '<p style="text-align:center;color:#888;padding:50px 0;font-size:18px;">🛒 Seu carrinho está vazio.</p>';
+    lista.innerHTML = '<p style="text-align:center;color:#888;padding:50px 0;font-size:18px;"> Seu carrinho está vazio.</p>';
     if (totalEl) totalEl.textContent = 'Total: R$ 0,00';
     return;
   }
