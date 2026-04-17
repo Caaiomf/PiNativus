@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área do Funcionário - Nativus</title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+      .botaovoltar {
+        margin-top: 14px;
+        padding: 12px;
+        width: 100%;
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: background-color 0.3s;
+        display: block;
+        text-align: center;
+        text-decoration: none;
+      }
+      .botaovoltar:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+  <div class="login-container">
+    <form id="loginForm">
+      <h1 style="text-align:center;color:#45a049;margin-bottom:20px;">
+        <img src="imagens/Design_sem_nome.png" alt="Nativus" style="height:50px;display:block;margin:0 auto 8px;">
+        Área do Funcionário
+      </h1>
+
+      <label for="tipo">Selecione a ferramenta:</label>
+      <select id="tipo" name="tipo" required>
+        <option value="">— Selecione —</option>
+        <option value="cadastro"> Cadastrar produto</option>
+        <option value="clienteger"> Gerenciar clientes</option>
+      </select>
+
+      <button type="submit">Entrar</button>
+    </form>
+
+    <a href="arealogin.html" class="botaovoltar">Voltar ao login</a>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const v = document.getElementById('tipo').value;
+      if      (v === 'cadastro')   window.location.href = 'cadastrarproduto.html';
+      else if (v === 'clienteger') window.location.href = 'formulario.html';
+      else alert('Por favor, selecione uma ferramenta.');
+    });
+  </script>
+</body>
+</html>

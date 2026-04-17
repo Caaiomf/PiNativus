@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho - Nativus</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; margin: 0; background-color: #f4fdf7; }
+
+        header {
+            background-color: #3a8b5f;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        header img { height: 38px; }
+        header span { font-size: 20px; font-weight: 700; }
+
+        .container { max-width: 900px; margin: auto; padding: 24px 16px; }
+
+        .topo-lista {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        h2 { color: #3a8b5f; margin: 0; }
+
+        .btn-limpar {
+            background: none;
+            border: 1px solid #e53935;
+            color: #e53935;
+            padding: 7px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-limpar:hover { background: #fdecea; }
+
+        .item-carrinho {
+            background: white;
+            padding: 14px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-bottom: 12px;
+            transition: box-shadow 0.2s;
+        }
+        .item-carrinho:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+
+        .item-info { display: flex; align-items: center; gap: 14px; }
+        .item-info img {
+            width: 78px; height: 78px;
+            object-fit: cover;
+            border-radius: 6px;
+            flex-shrink: 0;
+        }
+        .item-info h3 { margin: 0 0 3px; color: #3a8b5f; font-size: 15px; }
+        .item-info p  { margin: 2px 0; color: #555; font-size: 13px; }
+
+        .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .btn-qty {
+            width: 28px; height: 28px;
+            border: 1px solid #3a8b5f;
+            background: white;
+            color: #3a8b5f;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0; margin: 0;
+            transition: background 0.15s;
+        }
+        .btn-qty:hover { background: #e8f5e9; }
+        .qty-num { font-weight: 700; min-width: 22px; text-align: center; font-size: 15px; }
+
+        .btn-remover {
+            background-color: #eb2121;
+            color: white;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .btn-remover:hover { background: #c62828; }
+
+        .resumo {
+            background: white;
+            border-radius: 8px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+            margin-top: 10px;
+        }
+        .total {
+            font-size: 22px; font-weight: 700;
+            color: #333; text-align: right;
+            margin-bottom: 14px;
+        }
+        .acoes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .btn-voltar {
+            background-color: #3a8b5f;
+            color: white;
+            padding: 11px 20px;
+            border-radius: 6px;
+            font-size: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-voltar:hover { background: #2e7350; }
+        .btn-finalizar {
+            background-color: #ffc107;
+            color: #333;
+            padding: 11px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        .btn-finalizar:hover { background: #e0a800; }
+
+        @media (max-width: 500px) {
+            .item-info img { width: 58px; height: 58px; }
+            .acoes { flex-direction: column-reverse; }
+            .btn-finalizar, .btn-voltar { width: 100%; text-align: center; display: block; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="imagens/Design_sem_nome.png" alt="Nativus">
+    <span>Carrinho de Compras</span>
+</header>
+
+<div class="container">
+    <div class="topo-lista">
+        <h2>Itens adicionados</h2>
+        <button class="btn-limpar" onclick="limparCarrinho()">
+            <i class="fa-solid fa-broom"></i> Esvaziar carrinho
+        </button>
+    </div>
+
+    <div id="lista-carrinho"></div>
+
+    <div class="resumo">
+        <div id="total-carrinho" class="total">Total: R$ 0,00</div>
+        <div class="acoes">
+            <a href="cliente.html" class="btn-voltar">
+                <i class="fa-solid fa-arrow-left"></i> Voltar às compras
+            </a>
+            <a href="finalizar.html" class="btn-finalizar">
+                <i class="fa-solid fa-check"></i> Finalizar Compra
+            </a>
+        </div>
+    </div>
+</div>
+
+<script src="funcoes.js"></script>
+<script>
+    function renderizarCarrinhoCom() {
+        const lista   = document.getElementById('lista-carrinho');
+        const totalEl = document.getElementById('total-carrinho');
+        if (!lista) return;
+        const carrinho = getCarrinho();
+        lista.innerHTML = '';
+        if (carrinho.length === 0) {
+            lista.innerHTML = '<p style="text-align:center;color:#888;padding:50px 0;font-size:18px;">🛒 Seu carrinho está vazio.</p>';
+            if (totalEl) totalEl.textContent = 'Total: R$ 0,00';
+            return;
+        }
+        let total = 0;
+        carrinho.forEach((item, i) => {
+            const qty = item.qty || 1;
+            const sub = item.preco * qty;
+            total += sub;
+            lista.insertAdjacentHTML('beforeend', `
+              <div class="item-carrinho">
+                <div class="item-info">
+                  <img src="imagens/${item.img}" alt="${item.nome}" onerror="this.src='imagens/Design_sem_nome.png'">
+                  <div>
+                    <h3>${item.nome}</h3>
+                    <p>R$ ${item.preco.toFixed(2).replace('.', ',')} / unidade</p>
+                    <div class="qty-controls">
+                      <button class="btn-qty" onclick="alterarQty(${i}, -1)">−</button>
+                      <span class="qty-num">${qty}</span>
+                      <button class="btn-qty" onclick="alterarQty(${i}, +1)">+</button>
+                    </div>
+                    <p style="margin-top:5px;font-weight:700;color:#3a8b5f;">
+                      Subtotal: R$ ${sub.toFixed(2).replace('.', ',')}
+                    </p>
+                  </div>
+                </div>
+                <button class="btn-remover" onclick="removerDoCarrinho(${i})" title="Remover">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>`);
+        });
+        if (totalEl) totalEl.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', renderizarCarrinhoCom);
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+
+
+
+<body >
+ 
+  <div class="login-container">
+  
+    <form id="loginForm">
+      <h1>
+      <img src="/imagens/Design_sem_nome.png" alt="Logo" style="height: 100px; vertical-align: middle;">
+      </h1>
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+      <label for="tipo">Tipo de usuário</label>
+      <select id="tipo" name="tipo" >
+        <option value="">Selecione</option>
+        <option value="cliente">Cliente</option>
+        <option value="funcionario">Funcionário</option>
+        
+      </select>
+
+      <a href="gerenciamentofuncionario.html"><center><p class="cadastro">Cadastrar-se</p></center></a>
+
+      <button type="submit">Entrar</button>
+      
+    </form>
+  </div>
+  
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); 
+    const tipoUsuario = document.getElementById('tipo').value;
+
+    if (tipoUsuario === 'cliente') {
+      window.location.href = 'cliente.html';
+    } else if (tipoUsuario === 'funcionario') {
+      window.location.href = 'funcionario.html';
+    } else {
+      alert('Por favor, selecione um tipo de usuário.');
+    }
+  });
+</script>
+</body>
+</body>
+</html>

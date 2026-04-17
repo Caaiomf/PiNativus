@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Cliente - Nativus</title>
+<style>
+/* ── Reset & Base ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background:
+    linear-gradient(rgba(0,0,0,0.38), rgba(0,0,0,0.38)),
+    url("imagens/alimentos-saudaveis-variedade-de-frutas-e-vegetais-organicos_220925-36450.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 28px 16px 40px;
+}
+
+/* ── Card principal ── */
+.card {
+  background: #fff;
+  width: 100%;
+  max-width: 540px;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+/* ── Cabeçalho do card ── */
+.card-header {
+  background: linear-gradient(135deg, #3a8b5f 0%, #2d6e4a 100%);
+  padding: 22px 28px 18px;
+  text-align: center;
+}
+.card-header img { height: 48px; margin-bottom: 6px; }
+.card-header h1 {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.card-header p {
+  color: rgba(255,255,255,0.75);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+/* ── Barra de progresso das seções ── */
+.progress-bar {
+  display: flex;
+  background: #f0faf4;
+  border-bottom: 1px solid #d4e9dd;
+}
+.progress-step {
+  flex: 1;
+  text-align: center;
+  padding: 9px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #aaa;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  cursor: default;
+  line-height: 1.3;
+}
+.progress-step.ativo {
+  color: #3a8b5f;
+  border-bottom-color: #3a8b5f;
+  background: #fff;
+}
+.progress-step .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #888;
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.progress-step.ativo .num { background: #3a8b5f; color: #fff; }
+
+/* ── Corpo do form ── */
+.card-body { padding: 24px 28px; }
+
+/* ── Seções ── */
+.secao {
+  display: none;
+  animation: fadeIn 0.25s ease;
+}
+.secao.ativa { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.secao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #3a8b5f;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e8f5e9;
+}
+.secao-titulo .icon {
+  width: 28px; height: 28px;
+  background: #e8f5e9;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+/* ── Campos ── */
+.campo { margin-bottom: 14px; }
+.campo label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 5px;
+  letter-spacing: 0.2px;
+}
+.campo label .obrigatorio { color: #e53935; margin-left: 2px; }
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+  font-family: inherit;
+}
+.campo input:focus,
+.campo select:focus {
+  border-color: #3a8b5f;
+  box-shadow: 0 0 0 3px rgba(58,139,95,0.13);
+}
+.campo input.ok    { border-color: #43a047; background: #f9fff9; }
+.campo input.erro  { border-color: #e53935; background: #fff9f9; }
+
+.msg-erro {
+  display: none;
+  font-size: 11px;
+  color: #e53935;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+.msg-erro.visivel { display: flex; align-items: center; gap: 4px; }
+.msg-erro::before { content: '⚠'; font-size: 11px; }
+
+/* ── Grade 2 colunas ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g31 { display: grid; grid-template-columns: 3fr 1fr; gap: 10px; align-items: end; }
+.g21 { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+
+/* ── Tipo doc (CPF / CNPJ) ── */
+.tipo-doc-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
+.radio-doc {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 10px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.18s;
+  user-select: none;
+}
+.radio-doc input[type="radio"] { display: none; }
+.radio-doc.ativo {
+  border-color: #3a8b5f;
+  background: #f0faf4;
+  color: #3a8b5f;
+}
+
+/* ── Info CNPJ ── */
+.info-box {
+  display: none;
+  background: #f0faf4;
+  border-left: 3px solid #3a8b5f;
+  padding: 8px 12px;
+  border-radius: 0 6px 6px 0;
+  font-size: 12px;
+  color: #2d5a3d;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+/* ── Botão buscar CEP ── */
+.btn-cep {
+  width: 100%;
+  padding: 10px 8px;
+  background: #3a8b5f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-cep:hover { background: #2e7350; }
+
+/* Campo desabilitado (preenchido pelo CEP) */
+.campo input[readonly] {
+  background: #f5f5f5;
+  color: #666;
+  cursor: default;
+}
+.campo input[readonly]:focus { border-color: #ddd; box-shadow: none; }
+
+/* ── Força da senha ── */
+.forca-wrap { margin-top: 5px; display: flex; gap: 4px; }
+.forca-barra {
+  flex: 1; height: 4px;
+  border-radius: 2px;
+  background: #e0e0e0;
+  transition: background 0.2s;
+}
+.forca-label { font-size: 11px; color: #888; margin-top: 3px; }
+
+/* ── Navegação entre seções ── */
+.nav-btns {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 22px;
+  gap: 10px;
+}
+.btn-anterior {
+  padding: 11px 20px;
+  background: none;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-anterior:hover { border-color: #999; color: #333; }
+.btn-proximo,
+.btn-cadastrar {
+  flex: 1;
+  padding: 12px;
+  background: #3a8b5f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  letter-spacing: 0.2px;
+}
+.btn-proximo:hover, .btn-cadastrar:hover { background: #2e7350; }
+
+/* ── Rodapé do card ── */
+.card-footer {
+  text-align: center;
+  padding: 14px 28px 20px;
+  border-top: 1px solid #f0f0f0;
+}
+.card-footer a {
+  color: #3a8b5f;
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 600;
+}
+.card-footer a:hover { text-decoration: underline; }
+
+/* ── Responsivo ── */
+@media (max-width: 480px) {
+  .card-body { padding: 18px 16px; }
+  .g2  { grid-template-columns: 1fr; }
+  .g21 { grid-template-columns: 1fr; }
+  .g31 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+
+  <!-- Cabeçalho -->
+  <div class="card-header">
+    <img src="imagens/Design_sem_nome.png" alt="Nativus">
+    <h1>Cadastro de Cliente</h1>
+    <p>Preencha os dados para criar sua conta</p>
+  </div>
+
+  <!-- Indicador de progresso -->
+  <div class="progress-bar">
+    <div class="progress-step ativo" id="step-1">
+      <div class="num">1</div><br>Dados Pessoais
+    </div>
+    <div class="progress-step" id="step-2">
+      <div class="num">2</div><br>Documento
+    </div>
+    <div class="progress-step" id="step-3">
+      <div class="num">3</div><br>Endereço
+    </div>
+    <div class="progress-step" id="step-4">
+      <div class="num">4</div><br>Acesso
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form id="formCadastro" novalidate>
+
+      <!-- ═══════════════ SEÇÃO 1 — Dados pessoais ═══════════════ -->
+      <div class="secao ativa" id="secao-1">
+        <div class="secao-titulo">
+          Dados pessoais
+        </div>
+
+        <div class="campo">
+          <label>Nome completo <span class="obrigatorio">*</span></label>
+          <input type="text" id="nome" placeholder="Seu nome completo" autocomplete="name">
+          <span class="msg-erro" id="err-nome">Por favor, informe seu nome.</span>
+        </div>
+
+        <div class="g2">
+          <div class="campo">
+            <label>Data de nascimento</label>
+            <input type="date" id="nascimento" autocomplete="bday">
+          </div>
+          <div class="campo">
+            <label>Telefone</label>
+            <input type="tel" id="telefone" placeholder="(00) 00000-0000" maxlength="15"
+                   oninput="formatarTelefone(this)" autocomplete="tel">
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>E-mail <span class="obrigatorio">*</span></label>
+          <input type="email" id="email" placeholder="seu@email.com" autocomplete="email">
+          <span class="msg-erro" id="err-email">E-mail inválido.</span>
+        </div>
+
+        <div class="nav-btns">
+          <button type="button" class="btn-proximo" onclick="avancar(1)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SEÇÃO 2 — Documento ═══════════════ -->
+      <div class="secao" id="secao-2">
+        <div class="secao-titulo">
+          Documento
+        </div>
+
+        <div class="tipo-doc-wrap">
+          <label class="radio-doc ativo" id="label-cpf" onclick="alternarDoc('cpf')">
+            <input type="radio" name="tipo-doc" value="cpf" checked> CPF
+          </label>
+          <label class="radio-doc" id="label-cnpj" onclick="alternarDoc('cnpj')">
+            <input type="radio" name="tipo-doc" value="cnpj"> CNPJ
+          </label>
+        </div>
+
+        <div class="info-box" id="info-cnpj">
+          A Receita Federal libera CNPJs <strong>alfanuméricos</strong> (A–Z) a partir de julho/2026.
+          O campo já aceita o novo formato. Ex.: <strong>AB.CDE.FGH/0001-00</strong>
+        </div>
+
+        <div class="campo">
+          <label id="label-doc">Número do CPF <span class="obrigatorio">*</span></label>
+          <input type="text" id="documento" placeholder="000.000.000-00" maxlength="14"
+                 oninput="formatarDocumento(this)">
+          <span class="msg-erro" id="err-doc">Documento inválido. Verifique os dígitos.</span>
+        </div>
+
+        <div class="nav-btns">
+          <button type="button" class="btn-anterior" onclick="voltar(2)">← Anterior</button>
+          <button type="button" class="btn-proximo" onclick="avancar(2)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SEÇÃO 3 — Endereço ═══════════════ -->
+      <div class="secao" id="secao-3">
+        <div class="secao-titulo">
+          Endereço
+        </div>
+
+        <div class="g31">
+          <div class="campo">
+            <label>CEP <span class="obrigatorio">*</span></label>
+            <input type="text" id="cep" placeholder="00000-000" maxlength="9"
+                   oninput="formatarCEP(this)" inputmode="numeric">
+          </div>
+          <div class="campo" style="display:flex;align-items:flex-end;">
+            <button type="button" class="btn-cep"
+                    onclick="buscarCEP(document.getElementById('cep').value)">
+               Buscar
+            </button>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>Logradouro</label>
+          <input type="text" id="logradouro" placeholder="Preenchido pelo CEP" readonly>
+        </div>
+
+        <div class="g21">
+          <div class="campo">
+            <label>Bairro</label>
+            <input type="text" id="bairro" placeholder="Preenchido pelo CEP" readonly>
+          </div>
+          <div class="campo">
+            <label>Número <span class="obrigatorio">*</span></label>
+            <input type="text" id="numero" placeholder="Nº" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="campo">
+            <label>Cidade</label>
+            <input type="text" id="cidade" placeholder="Preenchida pelo CEP" readonly>
+          </div>
+          <div class="campo">
+            <label>UF</label>
+            <input type="text" id="uf" placeholder="UF" maxlength="2" readonly
+                   style="text-transform:uppercase;">
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>Complemento</label>
+          <input type="text" id="complemento" placeholder="Apto, bloco, sala... (opcional)">
+        </div>
+
+        <div class="nav-btns">
+          <button type="button" class="btn-anterior" onclick="voltar(3)">← Anterior</button>
+          <button type="button" class="btn-proximo" onclick="avancar(3)">Próximo →</button>
+        </div>
+      </div>
+
+      <!-- ═══════════════ SEÇÃO 4 — Senha ═══════════════ -->
+      <div class="secao" id="secao-4">
+        <div class="secao-titulo">
+           Senha de acesso
+        </div>
+
+        <div class="campo">
+          <label>Senha <span class="obrigatorio">*</span></label>
+          <input type="password" id="senha" placeholder="Mínimo 6 caracteres"
+                 oninput="verificarForca(this.value)" autocomplete="new-password">
+          <div class="forca-wrap" id="forca-wrap">
+            <div class="forca-barra" id="f1"></div>
+            <div class="forca-barra" id="f2"></div>
+            <div class="forca-barra" id="f3"></div>
+            <div class="forca-barra" id="f4"></div>
+          </div>
+          <div class="forca-label" id="forca-label"></div>
+          <span class="msg-erro" id="err-senha">A senha deve ter pelo menos 6 caracteres.</span>
+        </div>
+
+        <div class="campo">
+          <label>Confirmar senha <span class="obrigatorio">*</span></label>
+          <input type="password" id="conf-senha" placeholder="Repita a senha" autocomplete="new-password">
+          <span class="msg-erro" id="err-conf">As senhas não coincidem.</span>
+        </div>
+
+        <div class="nav-btns">
+          <button type="button" class="btn-anterior" onclick="voltar(4)">← Anterior</button>
+          <button type="submit" class="btn-cadastrar">✔ Criar conta</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="card-footer">
+    <a href="arealogin.html">Já tem conta? Fazer login</a>
+  </div>
+</div>
+
+<script src="funcoes.js"></script>
+<script>
+let secaoAtual = 1;
+
+// ── Navegar para frente ──
+function avancar(de) {
+  if (de === 1 && !validarSecao1()) return;
+  if (de === 2 && !validarSecao2()) return;
+  if (de === 3 && !validarSecao3()) return;
+  irParaSecao(de + 1);
+}
+
+function voltar(de) {
+  irParaSecao(de - 1);
+}
+
+function irParaSecao(n) {
+  document.querySelector('#secao-' + secaoAtual).classList.remove('ativa');
+  document.querySelector('#step-'  + secaoAtual).classList.remove('ativo');
+  secaoAtual = n;
+  document.querySelector('#secao-' + n).classList.add('ativa');
+  document.querySelector('#step-'  + n).classList.add('ativo');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Validação por seção ──
+function marcar(id, errId, invalido, msg) {
+  const el  = document.getElementById(id);
+  const err = document.getElementById(errId);
+  if (invalido) {
+    el.classList.add('erro'); el.classList.remove('ok');
+    err.textContent = '⚠ ' + msg;
+    err.classList.add('visivel');
+    return false;
+  }
+  el.classList.remove('erro'); el.classList.add('ok');
+  err.classList.remove('visivel');
+  return true;
+}
+
+function validarSecao1() {
+  const nome  = document.getElementById('nome').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const ok1 = marcar('nome',  'err-nome',  !nome, 'Por favor, informe seu nome.');
+  const ok2 = marcar('email', 'err-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email), 'E-mail inválido.');
+  return ok1 && ok2;
+}
+
+function validarSecao2() {
+  const tipo = document.querySelector('input[name="tipo-doc"]:checked').value;
+  const doc  = document.getElementById('documento').value;
+  const valido = tipo === 'cpf' ? validarCPF(doc) : validarCNPJ(doc);
+  return marcar('documento', 'err-doc', !valido,
+    tipo === 'cpf' ? 'CPF inválido.' : 'CNPJ inválido.');
+}
+
+function validarSecao3() {
+  const cep = document.getElementById('cep').value.replace(/\D/g,'');
+  if (cep && cep.length < 8) {
+    mostrarToast('CEP incompleto.', 'erro'); return false;
+  }
+  return true;
+}
+
+// ── CPF / CNPJ toggle ──
+function alternarDoc(tipo) {
+  const input = document.getElementById('documento');
+  const info  = document.getElementById('info-cnpj');
+  const label = document.getElementById('label-doc');
+  input.value = '';
+  input.classList.remove('ok','erro');
+  if (tipo === 'cpf') {
+    input.placeholder = '000.000.000-00';
+    input.maxLength   = 14;
+    document.getElementById('label-cpf').classList.add('ativo');
+    document.getElementById('label-cnpj').classList.remove('ativo');
+    document.querySelector('input[value="cpf"]').checked = true;
+    label.innerHTML = 'Número do CPF <span class="obrigatorio">*</span>';
+    info.style.display = 'none';
+  } else {
+    input.placeholder = 'AB.CDE.FGH/0001-00';
+    input.maxLength   = 18;
+    document.getElementById('label-cnpj').classList.add('ativo');
+    document.getElementById('label-cpf').classList.remove('ativo');
+    document.querySelector('input[value="cnpj"]').checked = true;
+    label.innerHTML = 'Número do CNPJ <span class="obrigatorio">*</span>';
+    info.style.display = 'block';
+  }
+}
+
+// ── Força da senha ──
+function verificarForca(senha) {
+  const barras = ['f1','f2','f3','f4'];
+  const label  = document.getElementById('forca-label');
+  const cores  = ['#e53935','#ff9800','#ffc107','#43a047'];
+  const nomes  = ['Muito fraca','Fraca','Razoável','Forte'];
+  let pontos = 0;
+  if (senha.length >= 6)  pontos++;
+  if (senha.length >= 10) pontos++;
+  if (/[A-Z]/.test(senha) && /[0-9]/.test(senha)) pontos++;
+  if (/[^A-Za-z0-9]/.test(senha)) pontos++;
+
+  barras.forEach((id, i) => {
+    document.getElementById(id).style.background = i < pontos ? cores[pontos - 1] : '#e0e0e0';
+  });
+  label.textContent  = senha.length ? nomes[Math.max(0, pontos - 1)] : '';
+  label.style.color  = senha.length ? cores[Math.max(0, pontos - 1)] : '';
+}
+
+// ── Submit final ──
+document.getElementById('formCadastro').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const senha = document.getElementById('senha').value;
+  const conf  = document.getElementById('conf-senha').value;
+  const ok1 = marcar('senha',     'err-senha', senha.length < 6, 'A senha deve ter pelo menos 6 caracteres.');
+  const ok2 = marcar('conf-senha','err-conf',  senha !== conf,   'As senhas não coincidem.');
+  if (!ok1 || !ok2) return;
+  mostrarToast('Conta criada com sucesso! Redirecionando...');
+  setTimeout(() => { window.location.href = 'arealogin.html'; }, 2000);
+});
+</script>
+</body>
+</html>
