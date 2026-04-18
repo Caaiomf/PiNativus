@@ -1,72 +1,119 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="estilo.css">
-<style>
-  body {
-  min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background:
-    linear-gradient(rgba(0,0,0,0.38), rgba(0,0,0,0.38)),
-    url("imagens/alimentos-saudaveis-variedade-de-frutas-e-vegetais-organicos_220925-36450.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 28px 16px 40px;
-}
-</style>
-</head>
-<body >
- 
-  <div class="login-container">
-  
-    <form id="loginForm">
-       <div class="card-header" style="display: block;margin-left: auto;margin-right: auto;width: 50%;">
-          <a href ="cliente.html"><img href ="cliente.html" src="imagens/Design_sem_nome.png" alt="Nativus"></a>
-       </div>
-          <h1>Cadastro de Cliente</h1>
-          <p>Preencha os dados para criar sua conta</p>
-      <label for="email">E-mail</label>
-      <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-      <label for="senha">Senha</label>
-      <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
-
-      <label for="tipo">Tipo de usuário</label>
-      <select id="tipo" name="tipo" >
-        <option value="">Selecione</option>
-        <option value="cliente">Cliente</option>
-        <option value="funcionario">Funcionário</option>
-        
-      </select>
-
-      <button><a href="formulario.html" class="cadastro" style="color: white">Cadastrar-se</a></button>
-
-      <button type="submit">Entrar</button>
-      
-    </form>
-  </div>
-  
-
-<script>
-  document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); 
-    const tipoUsuario = document.getElementById('tipo').value;
-
-    if (tipoUsuario === 'cliente') {
-      window.location.href = 'cliente.html';
-    } else if (tipoUsuario === 'funcionario') {
-      window.location.href = 'funcionario.html';
-    } else {
-      alert('Por favor, selecione um tipo de usuário.');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Nativus</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --nv-green: #3a8b5f;
+      --nv-green-dark: #2e7350;
+      --nv-green-light: #e8f5e9;
     }
-  });
-</script>
-</body>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+                  url("imagens/alimentos-saudaveis-variedade-de-frutas-e-vegetais-organicos_220925-36450.jpg") center/cover fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .nv-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+    }
+    .nv-card-header {
+      background: linear-gradient(135deg, var(--nv-green) 0%, var(--nv-green-dark) 100%);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .nv-card-header img { height: 52px; margin-bottom: 8px; }
+    .nv-card-header h1 { color:#fff; font-size:1.2rem; font-weight:700; margin:0; }
+    .nv-card-header p  { color:rgba(255,255,255,0.78); font-size:.82rem; margin:4px 0 0; }
+    .btn-nv {
+      background-color: var(--nv-green);
+      border-color: var(--nv-green);
+      color: #fff;
+      font-weight: 600;
+      transition: background .2s;
+    }
+    .btn-nv:hover, .btn-nv:focus {
+      background-color: var(--nv-green-dark);
+      border-color: var(--nv-green-dark);
+      color: #fff;
+    }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--nv-green);
+      box-shadow: 0 0 0 .2rem rgba(58,139,95,.18);
+    }
+    label { font-weight: 600; color: #444; font-size: .9rem; }
+    .btn-gray { background-color: #6c757d; color:#fff; font-weight:600; }
+    .btn-gray:hover { background-color:#5a6268; color:#fff; }
+    .footer-link { color: var(--nv-green); font-weight:600; font-size:.88rem; text-decoration:none; }
+    .footer-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="nv-card">
+    <div class="nv-card-header">
+      <a href="cliente.html"><img src="imagens/Design_sem_nome.png" alt="Nativus"></a>
+      <h1>Bem-vindo à Nativus</h1>
+      <p>Acesse sua conta ou cadastre-se</p>
+    </div>
+
+    <div class="p-4">
+      <form id="loginForm">
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" placeholder="seu@email.com" required>
+        </div>
+        <div class="mb-3">
+          <label for="senha" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="senha" placeholder="Digite sua senha" required>
+        </div>
+        <div class="mb-4">
+          <label for="tipo" class="form-label">Tipo de usuário</label>
+          <select class="form-select" id="tipo" name="tipo">
+            <option value="">Selecione</option>
+            <option value="cliente">Cliente</option>
+            <option value="funcionario">Funcionário</option>
+          </select>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-nv btn-lg">
+            <i class="fa-solid fa-right-to-bracket me-2"></i>Entrar
+          </button>
+          <a href="formulario.html" class="btn btn-gray btn-lg">
+            <i class="fa-solid fa-user-plus me-2"></i>Cadastrar-se
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <div class="text-center pb-3 border-top pt-3">
+      <a href="cliente.html" class="footer-link">
+        <i class="fa-solid fa-eye me-1"></i>Ver produtos sem entrar
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const tipo = document.getElementById('tipo').value;
+      if      (tipo === 'cliente')    window.location.href = 'cliente.html';
+      else if (tipo === 'funcionario') window.location.href = 'funcionario.html';
+      else alert('Por favor, selecione um tipo de usuário.');
+    });
+  </script>
 </body>
 </html>

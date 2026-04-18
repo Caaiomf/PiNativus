@@ -1,134 +1,149 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Produto - Nativus</title>
-    <link rel="stylesheet" href="estilo.css">
-    <style>
-      .botaovoltar {
-        margin-top: 10px;
-        padding: 11px;
-        width: 100%;
-        background-color: #6c757d;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 15px;
-        transition: background-color 0.3s;
-        display: block;
-        text-align: center;
-        text-decoration: none;
-      }
-      .botaovoltar:hover { background-color: #5a6268; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Produto - Nativus</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --nv-green: #3a8b5f;
+      --nv-green-dark: #2e7350;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.42), rgba(0,0,0,0.42)),
+                  url("imagens/alimentos-saudaveis-variedade-de-frutas-e-vegetais-organicos_220925-36450.jpg") center/cover fixed;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem 3rem;
+    }
+    .nv-card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.3);
+      overflow: hidden;
+      width: 100%;
+      max-width: 440px;
+    }
+    .nv-card-header {
+      background: linear-gradient(135deg, var(--nv-green) 0%, var(--nv-green-dark) 100%);
+      padding: 1.4rem;
+      text-align: center;
+    }
+    .nv-card-header img { height: 48px; margin-bottom: 6px; }
+    .nv-card-header h1 { color:#fff; font-size:1.1rem; font-weight:700; margin:0; }
+    .nv-card-header p  { color:rgba(255,255,255,.75); font-size:.8rem; margin:3px 0 0; }
 
-      /* Prefixo R$ no campo de preço */
-      .input-preco-wrap {
-        position: relative;
-        display: flex;
-        align-items: center;
-      }
-      .input-preco-wrap span {
-        position: absolute;
-        left: 10px;
-        color: #45a049;
-        font-weight: 700;
-        font-size: 15px;
-        pointer-events: none;
-      }
-      .input-preco-wrap input {
-        padding-left: 34px !important;
-      }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--nv-green);
+      box-shadow: 0 0 0 .2rem rgba(58,139,95,.15);
+    }
+    .btn-nv { background-color:var(--nv-green); border-color:var(--nv-green); color:#fff; font-weight:600; }
+    .btn-nv:hover { background-color:var(--nv-green-dark); border-color:var(--nv-green-dark); color:#fff; }
 
-      /* Indicador de status */
-      .status-badge {
-        display: inline-block;
-        font-size: 11px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        margin-left: 6px;
-        font-weight: 600;
-      }
-      .badge-ok  { background: #e8f5e9; color: #2e7350; }
-      .badge-err { background: #fdecea; color: #c62828; }
-    </style>
+    /* R$ prefix */
+    .input-group-text { background: #f0faf4; color: var(--nv-green); font-weight:700; border-right:none; }
+    .input-group .form-control { border-left:none; }
+    .input-group .form-control:focus { border-color: var(--nv-green); }
+
+    #preco-preview { color: var(--nv-green); font-size:.82rem; margin-top:3px; }
+  </style>
 </head>
 <body>
+  <div class="nv-card">
+    <div class="nv-card-header">
+      <a href="cliente.html"><img src="imagens/Design_sem_nome.png" alt="Nativus"></a>
+      <h1><i class="fa-solid fa-box-open me-2"></i>Cadastrar Produto</h1>
+      <p>Adicione um novo produto ao catálogo</p>
+    </div>
 
-  <div class="login-container">
+    <div class="p-4">
+      <form id="formProduto" novalidate>
 
- 
-    <h2 style="text-align:center;color:#45a049;margin-bottom:20px;">Cadastrar Produto</h2>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Nome do produto</label>
+          <input type="text" class="form-control" id="nomeProduto" placeholder="Ex.: Cenoura Orgânica">
+        </div>
 
-    <form id="formProduto" novalidate>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Código do produto</label>
+          <input type="text" class="form-control" id="codigoProduto"
+                 placeholder="Ex.: PROD-0001" maxlength="12"
+                 oninput="formatarCodigo(this)">
+        </div>
 
-      <label for="nomeProduto">Nome do produto</label>
-      <input type="text" id="nomeProduto" placeholder="Ex.: Cenoura Orgânica">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Categoria</label>
+          <select class="form-select" id="categoriaProduto">
+            <option value="">— Selecione —</option>
+            <option value="fruta">🍎 Fruta</option>
+            <option value="verdura">🥕 Verdura / Legume</option>
+            <option value="folhosa">🥬 Folhosa</option>
+            <option value="outro">📦 Outro</option>
+          </select>
+        </div>
 
-      <label for="codigoProduto">Código do produto</label>
-      <input type="text" id="codigoProduto" placeholder="Ex.: PROD-0001" maxlength="12"
-             oninput="formatarCodigo(this)">
+        <div class="mb-1">
+          <label class="form-label fw-semibold">Preço</label>
+          <div class="input-group">
+            <span class="input-group-text">R$</span>
+            <input type="text" class="form-control" id="precoProduto"
+                   placeholder="0,00" maxlength="12"
+                   oninput="formatarPrecoInput(this)" inputmode="numeric">
+          </div>
+          <small id="preco-preview"></small>
+        </div>
 
-      <label for="categoriaProduto">Categoria</label>
-      <select id="categoriaProduto">
-        <option value="">— Selecione —</option>
-        <option value="fruta"> Fruta</option>
-        <option value="verdura"> Verdura / Legume</option>
-        <option value="folhosa"> Folhosa</option>
-        <option value="outro">Outro</option>
-      </select>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Unidade de venda</label>
+          <select class="form-select" id="unidadeProduto">
+            <option value="kg">Kg</option>
+            <option value="unidade">Unidade</option>
+            <option value="maço">Maço</option>
+            <option value="caixa">Caixa</option>
+          </select>
+        </div>
 
-      <label for="precoProduto">Preço</label>
-      <div class="input-preco-wrap">
-        <input type="text" id="precoProduto" placeholder="0,00" maxlength="12"
-               oninput="formatarPrecoInput(this)" inputmode="numeric">
-      </div>
-      <small id="preco-preview" style="color:#3a8b5f;font-size:12px;margin-top:3px;display:block;"></small>
-
-      <label for="unidadeProduto">Unidade de venda</label>
-      <select id="unidadeProduto">
-        <option value="kg">Kg</option>
-        <option value="unidade">Unidade</option>
-        <option value="maço">Maço</option>
-        <option value="caixa">Caixa</option>
-      </select>
-
-      <button type="submit">Cadastrar produto</button>
-    </form>
-
-    <a href="funcionario.html" class="botaovoltar">Voltar</a>
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-nv btn-lg">
+            <i class="fa-solid fa-plus me-2"></i>Cadastrar produto
+          </button>
+          <a href="funcionario.html" class="btn btn-secondary btn-lg">
+            <i class="fa-solid fa-arrow-left me-2"></i>Voltar
+          </a>
+        </div>
+      </form>
+    </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="funcoes.js"></script>
   <script>
-    // Máscara código: PROD-0001
     function formatarCodigo(input) {
-      let v = input.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 8);
-      if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
+      let v = input.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,8);
+      if (v.length > 4) v = v.slice(0,4) + '-' + v.slice(4);
       input.value = v;
     }
 
-    // Máscara preço: digita números → formata como 0,00
     function formatarPrecoInput(input) {
-      let raw = input.value.replace(/\D/g, '');
-      if (!raw) { input.value = ''; document.getElementById('preco-preview').textContent = ''; return; }
-      const num = parseInt(raw, 10) / 100;
-      const formatado = num.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-      input.value = formatado;
-      document.getElementById('preco-preview').textContent = 'R$ ' + formatado + ' / ' +
-        (document.getElementById('unidadeProduto').value || 'unidade');
+      let raw = input.value.replace(/\D/g,'');
+      if (!raw) { input.value=''; document.getElementById('preco-preview').textContent=''; return; }
+      const num = parseInt(raw,10)/100;
+      const fmt = num.toFixed(2).replace('.',',').replace(/(\d)(?=(\d{3})+(?!\d))/g,'$1.');
+      input.value = fmt;
+      document.getElementById('preco-preview').textContent =
+        'R$ ' + fmt + ' / ' + (document.getElementById('unidadeProduto').value || 'unidade');
     }
 
     document.getElementById('formProduto').addEventListener('submit', function(e) {
       e.preventDefault();
-      const nome   = document.getElementById('nomeProduto').value.trim();
-      const codigo = document.getElementById('codigoProduto').value.trim();
-      const preco  = document.getElementById('precoProduto').value.trim();
-
-      if (!nome)   { alert('Informe o nome do produto.'); return; }
-      if (!preco)  { alert('Informe o preço do produto.'); return; }
-
+      const nome  = document.getElementById('nomeProduto').value.trim();
+      const preco = document.getElementById('precoProduto').value.trim();
+      if (!nome)  { alert('Informe o nome do produto.'); return; }
+      if (!preco) { alert('Informe o preço do produto.'); return; }
       mostrarToast('Produto "' + nome + '" cadastrado com sucesso!');
       setTimeout(() => {
         document.getElementById('formProduto').reset();

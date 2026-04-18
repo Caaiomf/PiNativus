@@ -1,466 +1,365 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nativus - Produtos</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-    * { box-sizing: border-box; }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background-color: #f4fdf7;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nativus - Produtos</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --nv-green: #3a8b5f;
+      --nv-green-dark: #2e7350;
+      --nv-green-light: #e8f5e9;
     }
-    header {
-      background-color: #3a8b5f;
-      color: white;
-      padding: 5px 10px;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 22px;
-      margin: 0;
-      padding: 6px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .container { max-width: 1000px; margin: auto; padding: 20px; }
-    h2 { color: #3a8b5f; margin-bottom: 20px; }
+    body { background-color: #f4fdf7; }
 
-    /* Barra de topo */
-    .barra-topo {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      gap: 10px;
-      max-width: 760px;
-      margin: 0 auto;
-      flex-wrap: wrap;
-    }
-    .barra-topo input[type="text"] {
-      flex: 1;
-      padding: 9px 12px;
-      font-size: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      min-width: 140px;
-      outline: none;
-    }
-    .barra-topo input[type="text"]:focus { border-color: #3a8b5f; }
-    .btn-conta {
-      background-color: #6fbf8f;
-      color: #1a4d32;
-      padding: 9px 14px;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+    /* Navbar */
+    .navbar { background-color: var(--nv-green) !important; }
+    .navbar-brand img { height: 46px; }
+    .navbar-brand span { color:#fff; font-weight:700; font-size:1.2rem; }
+    .btn-nv-outline {
+      border: 2px solid rgba(255,255,255,.7);
+      color: #fff;
       font-weight: 600;
-      transition: background 0.2s;
+      font-size: .85rem;
     }
-    .btn-conta:hover { background: #5ab07e; }
-    .btn-carrinho {
-      background-color: #3a8b5f;
-      color: white;
-      padding: 9px 14px;
-      text-decoration: none;
-      border-radius: 5px;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 600;
-      position: relative;
-      transition: background 0.2s;
+    .btn-nv-outline:hover { background: rgba(255,255,255,.15); color: #fff; }
+    .btn-nv-yellow {
+      background-color: #ffc107; color: #333;
+      font-weight: 700; border: none;
+      transition: background .2s;
     }
-    .btn-carrinho:hover { background: #2e7350; }
+    .btn-nv-yellow:hover { background: #e0a800; color: #222; }
     #badge-carrinho {
-      position: absolute;
-      top: -8px; right: -8px;
-      background: #eb2121;
-      color: white;
-      border-radius: 50%;
-      width: 22px; height: 22px;
-      font-size: 11px; font-weight: 700;
-      display: none;
-      align-items: center;
-      justify-content: center;
+      position: absolute; top: -8px; right: -8px;
+      background: #eb2121; color: #fff;
+      border-radius: 50%; width: 20px; height: 20px;
+      font-size: 10px; font-weight: 700;
+      display: none; align-items: center; justify-content: center;
     }
 
     /* Banner */
-    .banner-promocional {
-      position: relative;
-      width: 100%;
-      max-height: 300px;
-      overflow: hidden;
-      margin-bottom: 20px;
+    .banner-wrap {
+      position: relative; overflow: hidden;
+      max-height: 300px; margin-bottom: 1.5rem;
+      background: #1a4d32;
     }
-    .banner-promocional img {
-      width: 80%;
-      height: auto;
-      display: block;
+    .banner-wrap img {
+      width: 80%; display: block;
       margin: -5% auto 0;
       object-fit: cover;
     }
-    .texto-banner {
-      position: absolute;
-      top: 50%;
-      left: 55%;
+    .banner-text {
+      position: absolute; top:50%; left: 55%;
       transform: translateY(-50%);
-      background-color: rgba(0,0,0,0.5);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 380px;
+      background: rgba(0,0,0,.52);
+      color: #fff; padding: 18px 20px;
+      border-radius: 8px; max-width: 360px;
     }
-    .texto-banner h2 { font-size: 22px; margin-bottom: 8px; color: #ffc107; }
-    .texto-banner p  { font-size: 14px; margin-bottom: 12px; }
-    .btn-banner {
-      background-color: #ffc107;
-      color: #333;
-      padding: 9px 18px;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-      font-size: 14px;
-      transition: background 0.2s;
-    }
-    .btn-banner:hover { background: #e0a800; }
+    .banner-text h2 { color:#ffc107; font-size:1.3rem; margin-bottom:6px; }
+    .banner-text p  { font-size:.85rem; margin-bottom:10px; }
 
-    /* Grid de produtos */
-    .produtos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
+    /* Search */
+    .search-bar input:focus {
+      border-color: var(--nv-green);
+      box-shadow: 0 0 0 .2rem rgba(58,139,95,.18);
     }
-    .produto {
-      background-color: white;
+
+    /* Product cards */
+    .produto-card {
+      background: #fff;
       border-radius: 10px;
-      padding: 14px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      transition: box-shadow .2s, transform .2s;
       position: relative;
-      transition: box-shadow 0.2s, transform 0.2s;
+      overflow: hidden;
     }
-    .produto:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.14); transform: translateY(-2px); }
-    .produto img {
-      width: 100%;
-      height: 150px;
+    .produto-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.14); transform: translateY(-3px); }
+    .produto-card img {
+      width:100%; height: 160px;
       object-fit: cover;
-      border-radius: 6px;
     }
-    .produto h3 { margin: 10px 0 4px; color: #333; font-size: 15px; }
-    .produto .preco { color: #3a8b5f; font-weight: 700; font-size: 16px; margin-bottom: 12px; }
-
-    /* Tag orgânico */
+    .produto-card .card-body { padding: 12px 14px 14px; text-align: center; }
+    .produto-card h5 { color:#333; font-size:.95rem; margin-bottom:3px; }
+    .preco { color: var(--nv-green); font-weight:700; font-size:1rem; margin-bottom:10px; }
     .tag-organico {
       display: inline-block;
-      background: #e8f5e9;
+      background: var(--nv-green-light);
       color: #2e7350;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 20px;
-      margin-bottom: 5px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: .68rem; font-weight:700;
+      padding: 2px 8px; border-radius:20px;
+      text-transform:uppercase; letter-spacing:.5px;
+      margin-bottom:4px;
     }
-
-    /* Ações do produto */
-    .produto-acoes {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-    }
-    /* COMPRAR — amarelo, adiciona e vai direto ao carrinho */
     .btn-comprar {
-      padding: 8px 0;
-      width: 50%;
-      background-color: #ffc107;
-      color: #333;
-      font-size: 13px;
-      font-weight: 700;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.2s;
+      background-color: #ffc107; color:#333;
+      font-weight:700; font-size:.82rem;
+      border: none; border-radius:5px;
+      padding: 7px 0; width:48%;
+      cursor:pointer; transition:background .2s;
     }
-    .btn-comprar:hover { background: #e0a800; }
-    /* CARRINHO — verde, só adiciona */
-    .btn-add-carrinho {
-      padding: 8px 0;
-      width: 50%;
-      background-color: #3a8b5f;
-      color: white;
-      font-size: 13px;
-      font-weight: 600;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: background 0.2s;
+    .btn-comprar:hover { background:#e0a800; }
+    .btn-add-cart {
+      background-color: var(--nv-green); color:#fff;
+      font-weight:600; font-size:.82rem;
+      border:none; border-radius:5px;
+      padding: 7px 0; width:48%;
+      cursor:pointer; display:inline-flex;
+      align-items:center; justify-content:center;
+      gap:4px; transition:background .2s;
     }
-    .btn-add-carrinho:hover { background: #2e7350; }
+    .btn-add-cart:hover { background:var(--nv-green-dark); }
+    .btn-fav {
+      position:absolute; top:10px; right:10px;
+      background:none; border:none;
+      font-size:1.2rem; color:#ddd;
+      cursor:pointer; transition:color .2s;
+      padding:0;
+    }
+    .btn-fav.ativo { color:#f9a825; }
 
-    /* Favorito */
-    .favorito {
-      position: absolute;
-      top: 10px; right: 10px;
-      font-size: 20px;
-      color: #ccc;
-      cursor: pointer;
-      background: none;
-      border: none;
-      padding: 0; margin: 0;
-      transition: color 0.2s;
+    @media (max-width:480px) {
+      .banner-text { left:5%; right:5%; transform:translateY(-50%); max-width:90%; }
+      .banner-wrap img { width:100%; margin:0; }
     }
-    .favorito.ativo { color: #f9a825; }
-
-    /* Sem resultados */
-    .sem-resultado {
-      text-align: center;
-      color: #aaa;
-      font-size: 16px;
-      padding: 40px 0;
-      display: none;
-    }
-
-    @media (max-width: 480px) {
-      .texto-banner { left: 6%; right: 6%; transform: translateY(-50%); max-width: 90%; }
-      .banner-promocional img { width: 100%; margin: 0; }
-    }
-    </style>
+  </style>
 </head>
 <body>
 
-  <header>
-    <h1>
-      <a href ="cliente.html"><img href ="cliente.html" src="imagens/Design_sem_nome.png" alt="Nativus" style="max-width: 130px;"></a>
-      Bem-vindo à Nativus
-    </h1>
-  </header>
-
-  <div class="barra-topo">
-    <input type="text" id="pesquisa" placeholder=" Buscar produtos..." oninput="filtrarProdutos()">
-    <a href="carrinho.html" class="btn-carrinho">
-      <i class="fas fa-shopping-cart"></i> Carrinho
-      <span id="badge-carrinho"></span>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+  <div class="container-fluid px-3">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="cliente.html">
+      <img src="imagens/Design_sem_nome.png" alt="Nativus">
+      <span>Nativus</span>
     </a>
-    <a href="arealogin.html" class="btn-conta">
-      <i class="fas fa-user"></i> Minha Conta
-    </a>
-  </div>
 
-  <section class="banner-promocional">
-    <img src="imagens/baner1.jpg" alt="Banner de promoção">
-    <div class="texto-banner">
-      <h2>Super Desconto</h2>
-      <p>Cesta de frutas, verduras e muito mais!</p>
-      <a href="ofertas.html" class="btn-banner">Ver Ofertas</a>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <!-- Search mobile -->
+      <input type="text" class="form-control form-control-sm d-lg-none" id="pesquisa-m"
+             placeholder="Buscar..." oninput="filtrarProdutos(this.value)" style="max-width:140px;">
+
+      <!-- Cart -->
+      <a href="carrinho.html" class="btn btn-nv-outline btn-sm position-relative">
+        <i class="fas fa-shopping-cart"></i>
+        <span id="badge-carrinho" style="display:none;"></span>
+      </a>
+
+      <!-- Account -->
+      <a href="arealogin.html" class="btn btn-nv-outline btn-sm d-none d-sm-inline-flex">
+        <i class="fas fa-user me-1"></i>Minha Conta
+      </a>
     </div>
-  </section>
+  </div>
+</nav>
 
-  <div class="container">
-    <h2>Produtos Disponíveis</h2>
+<!-- Search desktop -->
+<div class="container search-bar py-3 d-none d-lg-flex align-items-center gap-3">
+  <input type="text" class="form-control" id="pesquisa" placeholder="🔍 Buscar produtos..."
+         oninput="filtrarProdutos(this.value)">
+  <a href="arealogin.html" class="btn d-lg-none" style="background:var(--nv-green);color:#fff;">
+    <i class="fas fa-user"></i>
+  </a>
+</div>
 
-    <p class="sem-resultado" id="sem-resultado">Nenhum produto encontrado.</p>
+<!-- Banner -->
+<section class="banner-wrap">
+  <img src="imagens/baner1.jpg" alt="Banner">
+  <div class="banner-text">
+    <h2>Super Desconto</h2>
+    <p>Cesta de frutas, verduras e muito mais!</p>
+    <a href="ofertas.html" class="btn btn-nv-yellow btn-sm">Ver Ofertas</a>
+  </div>
+</section>
 
-    <div class="produtos" id="grade-produtos">
+<!-- Products -->
+<div class="container pb-5">
+  <h4 class="fw-bold mb-3" style="color:var(--nv-green);">Produtos Disponíveis</h4>
+  <p class="text-center text-muted d-none" id="sem-resultado">Nenhum produto encontrado.</p>
 
-      <!-- Cada botão "Comprar" chama adicionarAoCarrinho com redirecionar=true -->
-      <!-- Cada botão "Carrinho" chama com redirecionar=false (só adiciona) -->
+  <div class="row g-3" id="grade-produtos">
 
-      <div class="produto" data-nome="Tomate Orgânico">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+    <!-- Tomate -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Tomate Orgânico">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
         <img src="imagens/legumes-Tomate-Andrea-1586283695804.png" alt="Tomate Orgânico">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Tomate Orgânico</h3>
-        <p class="preco">R$ 6,00 / kg</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Tomate Orgânico', 6.00, 'legumes-Tomate-Andrea-1586283695804.png', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Tomate Orgânico', 6.00, 'legumes-Tomate-Andrea-1586283695804.png', false)">
-            <i class="fas fa-cart-plus"></i> Carrinho
-          </button>
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Tomate Orgânico</h5>
+          <p class="preco">R$ 6,00 / kg</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Tomate Orgânico',6.00,'legumes-Tomate-Andrea-1586283695804.png',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Tomate Orgânico',6.00,'legumes-Tomate-Andrea-1586283695804.png',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
         </div>
       </div>
-
-      <div class="produto" data-nome="Alface Crespa Orgânica">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/images.jpg" alt="Alface Orgânica">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Alface Crespa Orgânica</h3>
-        <p class="preco">R$ 3,50 / unidade</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Alface Crespa Orgânica', 3.50, 'images.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Alface Crespa Orgânica', 3.50, 'images.jpg', false)">
-            <i class="fas fa-cart-plus"></i> Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Banana Prata Orgânica">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/banana_prata.jpg" alt="Banana Orgânica">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Banana Prata Orgânica</h3>
-        <p class="preco">R$ 5,00 / kg</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Banana Prata Orgânica', 5.00, 'banana_prata.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Banana Prata Orgânica', 5.00, 'banana_prata.jpg', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Cenoura Orgânica">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/cenoura.jpg" alt="Cenoura Orgânica">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Cenoura Orgânica</h3>
-        <p class="preco">R$ 4,20 / kg</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Cenoura Orgânica', 4.20, 'cenoura.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Cenoura Orgânica', 4.20, 'cenoura.jpg', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Mamão Papaia Orgânico">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/mamaopapaia.jpg" alt="Mamão Papaia">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Mamão Papaia Orgânico</h3>
-        <p class="preco">R$ 5,50 / unidade</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Mamão Papaia Orgânico', 5.50, 'mamaopapaia.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Mamão Papaia Orgânico', 5.50, 'mamaopapaia.jpg', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Laranja Lima Orgânica">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/laranja.jpg" alt="Laranja Lima">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Laranja Lima Orgânica</h3>
-        <p class="preco">R$ 4,50 / unidade</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Laranja Lima Orgânica', 4.50, 'laranja.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Laranja Lima Orgânica', 4.50, 'laranja.jpg', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Espinafre Orgânico">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/espinafre.jpg" alt="Espinafre">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Espinafre Orgânico</h3>
-        <p class="preco">R$ 4,00 / kg</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Espinafre Orgânico', 4.00, 'espinafre.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Espinafre Orgânico', 4.00, 'espinafre.jpg', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Pimentão Orgânico">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/pimenta-o-vermelho-10kg-1gks5c1n3c.webp" alt="Pimentão">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Pimentão Orgânico</h3>
-        <p class="preco">R$ 13,00 / kg</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Pimentão Orgânico', 13.00, 'pimenta-o-vermelho-10kg-1gks5c1n3c.webp', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Pimentão Orgânico', 13.00, 'pimenta-o-vermelho-10kg-1gks5c1n3c.webp', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
-      <div class="produto" data-nome="Brócolis Orgânico">
-        <button class="favorito" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
-        <img src="imagens/brocolis.jpg" alt="Brócolis">
-        <span class="tag-organico">Orgânico</span>
-        <h3>Brócolis Orgânico</h3>
-        <p class="preco">R$ 14,00 / kg</p>
-        <div class="produto-acoes">
-          <button class="btn-comprar"
-            onclick="adicionarAoCarrinho('Brócolis Orgânico', 14.00, 'brocolis.jpg', true)">
-            Comprar
-          </button>
-          <button class="btn-add-carrinho"
-            onclick="adicionarAoCarrinho('Brócolis Orgânico', 14.00, 'brocolis.jpg', false)">
-            <i class="fas fa-cart-plus"></i>Carrinho
-          </button>
-        </div>
-      </div>
-
     </div>
+
+    <!-- Alface -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Alface Crespa Orgânica">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/images.jpg" alt="Alface">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Alface Crespa Orgânica</h5>
+          <p class="preco">R$ 3,50 / unidade</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Alface Crespa Orgânica',3.50,'images.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Alface Crespa Orgânica',3.50,'images.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banana -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Banana Prata Orgânica">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/banana_prata.jpg" alt="Banana Prata">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Banana Prata Orgânica</h5>
+          <p class="preco">R$ 5,00 / kg</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Banana Prata Orgânica',5.00,'banana_prata.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Banana Prata Orgânica',5.00,'banana_prata.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cenoura -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Cenoura Orgânica">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/cenoura.jpg" alt="Cenoura">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Cenoura Orgânica</h5>
+          <p class="preco">R$ 4,20 / kg</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Cenoura Orgânica',4.20,'cenoura.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Cenoura Orgânica',4.20,'cenoura.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mamão -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Mamão Papaia Orgânico">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/mamaopapaia.jpg" alt="Mamão Papaia">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Mamão Papaia Orgânico</h5>
+          <p class="preco">R$ 5,50 / unidade</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Mamão Papaia Orgânico',5.50,'mamaopapaia.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Mamão Papaia Orgânico',5.50,'mamaopapaia.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Laranja -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Laranja Lima Orgânica">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/laranja.jpg" alt="Laranja Lima">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Laranja Lima Orgânica</h5>
+          <p class="preco">R$ 4,50 / unidade</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Laranja Lima Orgânica',4.50,'laranja.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Laranja Lima Orgânica',4.50,'laranja.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Espinafre -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Espinafre Orgânico">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/espinafre.jpg" alt="Espinafre">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Espinafre Orgânico</h5>
+          <p class="preco">R$ 4,00 / kg</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Espinafre Orgânico',4.00,'espinafre.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Espinafre Orgânico',4.00,'espinafre.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pimentão -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Pimentão Orgânico">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/pimenta-o-vermelho-10kg-1gks5c1n3c.webp" alt="Pimentão">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Pimentão Orgânico</h5>
+          <p class="preco">R$ 13,00 / kg</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Pimentão Orgânico',13.00,'pimenta-o-vermelho-10kg-1gks5c1n3c.webp',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Pimentão Orgânico',13.00,'pimenta-o-vermelho-10kg-1gks5c1n3c.webp',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brócolis -->
+    <div class="col-6 col-md-4 col-lg-3 produto-item" data-nome="Brócolis Orgânico">
+      <div class="produto-card h-100">
+        <button class="btn-fav" onclick="toggleFavorito(this)"><i class="fa-solid fa-star"></i></button>
+        <img src="imagens/brocolis.jpg" alt="Brócolis">
+        <div class="card-body">
+          <span class="tag-organico">Orgânico</span>
+          <h5>Brócolis Orgânico</h5>
+          <p class="preco">R$ 14,00 / kg</p>
+          <div class="d-flex justify-content-between">
+            <button class="btn-comprar" onclick="adicionarAoCarrinho('Brócolis Orgânico',14.00,'brocolis.jpg',true)">Comprar</button>
+            <button class="btn-add-cart" onclick="adicionarAoCarrinho('Brócolis Orgânico',14.00,'brocolis.jpg',false)"><i class="fas fa-cart-plus"></i> +</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <script src="funcoes.js"></script>
-  <script>
-    function toggleFavorito(el) { el.classList.toggle('ativo'); }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="funcoes.js"></script>
+<script>
+  function toggleFavorito(el) { el.classList.toggle('ativo'); }
 
-    function filtrarProdutos() {
-      const termo = document.getElementById('pesquisa').value.toLowerCase();
-      let visiveis = 0;
-      document.querySelectorAll('.produto').forEach(card => {
-        const nome = card.getAttribute('data-nome').toLowerCase();
-        const visivel = nome.includes(termo);
-        card.style.display = visivel ? '' : 'none';
-        if (visivel) visiveis++;
-      });
-      document.getElementById('sem-resultado').style.display = visiveis === 0 ? 'block' : 'none';
+  function filtrarProdutos(termo) {
+    if (!termo && termo !== '') {
+      termo = document.getElementById('pesquisa') ?
+              document.getElementById('pesquisa').value.toLowerCase() : '';
+    } else {
+      termo = termo.toLowerCase();
     }
+    let visiveis = 0;
+    document.querySelectorAll('.produto-item').forEach(card => {
+      const nome = card.getAttribute('data-nome').toLowerCase();
+      const v = nome.includes(termo);
+      card.style.display = v ? '' : 'none';
+      if (v) visiveis++;
+    });
+    const sr = document.getElementById('sem-resultado');
+    if (sr) sr.classList.toggle('d-none', visiveis !== 0);
+  }
 
-    document.addEventListener('DOMContentLoaded', atualizarBadgeCarrinho);
-  </script>
+  document.addEventListener('DOMContentLoaded', atualizarBadgeCarrinho);
+</script>
 </body>
 </html>

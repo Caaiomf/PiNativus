@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Compra - Nativus</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --nv-green:       #3a8b5f;
+      --nv-green-dark:  #2e7350;
+      --nv-green-light: #e8f5e9;
+      --nv-yellow:      #ffc107;
+    }
+
+    body { background-color: #f4fdf7; }
+
+    /* ── Header ── */
+    .nv-header {
+      background-color: var(--nv-green);
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .nv-header img  { height: 48px; }
+    .nv-header span { font-size: 1.45rem; font-weight: 700; }
+
+    /* ── Steps ── */
+    .checkout-steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      padding: 18px 16px 0;
+    }
+    .cs-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+      max-width: 110px;
+      position: relative;
+    }
+    .cs-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 17px;
+      left: calc(50% + 18px);
+      right: calc(-50% + 18px);
+      height: 2px;
+      background: #cde8d8;
+      z-index: 0;
+    }
+    .cs-circle {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; font-weight: 700;
+      background: #e0e0e0; color: #999;
+      position: relative; z-index: 1;
+      transition: all .3s;
+    }
+    .cs-circle.ativo  { background: var(--nv-green); color: #fff; }
+    .cs-circle.feito  { background: var(--nv-green); color: #fff; }
+    .cs-circle.feito i { font-size: .8rem; }
+    .cs-label { font-size: .7rem; font-weight: 600; color: #aaa; text-align: center; line-height: 1.2; }
+    .cs-label.ativo { color: var(--nv-green); }
+    .cs-label.feito { color: var(--nv-green); }
+
+    /* ── Panels ── */
+    .painel {
+      display: none;
+      animation: fadeIn .28s ease;
+    }
+    .painel.ativo { display: block; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+    /* ── Section card ── */
+    .sec-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07);
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+    .sec-header {
+      background: var(--nv-green-light);
+      border-bottom: 1px solid #cde8d8;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sec-header .icon {
+      width: 32px; height: 32px;
+      background: var(--nv-green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .88rem;
+    }
+    .sec-header h6 { margin: 0; font-weight: 700; color: #2a5c42; font-size: .95rem; }
+    .sec-body { padding: 20px; }
+
+    /* ── Form ── */
+    .form-label { font-weight: 600; font-size: .88rem; color: #444; }
+    .form-control:focus, .form-select:focus {
+      border-color: var(--nv-green);
+      box-shadow: 0 0 0 .2rem rgba(58,139,95,.15);
+    }
+    .input-group-text {
+      background: var(--nv-green-light);
+      color: var(--nv-green);
+      font-weight: 700;
+      border-right: none;
+    }
+    .input-group .form-control { border-left: none; }
+
+    /* ── Payment options ── */
+    .pay-option {
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: all .2s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+    }
+    .pay-option:hover { border-color: var(--nv-green); background: #fafffe; }
+    .pay-option.selecionado { border-color: var(--nv-green); background: var(--nv-green-light); }
+    .pay-option input[type="radio"] { display: none; }
+    .pay-icon {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .pay-icon.pix    { background:#e3f2fd; color:#1565c0; }
+    .pay-icon.cartao { background:#fce4ec; color:#c62828; }
+    .pay-icon.boleto { background:#fff3e0; color:#e65100; }
+    .pay-icon.dinheiro { background:#f3e5f5; color:#6a1b9a; }
+    .pay-title { font-weight: 700; font-size: .9rem; color: #333; margin:0; }
+    .pay-sub   { font-size: .75rem; color: #888; margin:0; }
+    .pay-radio-dot {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      margin-left: auto;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all .2s;
+    }
+    .pay-option.selecionado .pay-radio-dot {
+      border-color: var(--nv-green);
+      background: var(--nv-green);
+    }
+    .pay-option.selecionado .pay-radio-dot::after {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%; background: #fff;
+    }
+
+    /* Cartão fields */
+    .cartao-fields { display: none; animation: fadeIn .22s ease; }
+    .cartao-fields.show { display: block; }
+    .card-preview {
+      background: linear-gradient(135deg, #2d6e4a 0%, #1a4d32 100%);
+      border-radius: 14px;
+      padding: 22px 22px 18px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+    .card-preview::before {
+      content:'';
+      position:absolute;
+      width:200px; height:200px;
+      border-radius:50%;
+      background:rgba(255,255,255,.06);
+      top:-60px; right:-60px;
+    }
+    .card-preview::after {
+      content:'';
+      position:absolute;
+      width:130px; height:130px;
+      border-radius:50%;
+      background:rgba(255,255,255,.05);
+      bottom:-40px; left:30px;
+    }
+    .card-chip { font-size:1.6rem; margin-bottom:14px; opacity:.9; }
+    .card-number { letter-spacing: 3px; font-size:1rem; font-weight:600; margin-bottom:14px; font-family:monospace; }
+    .card-info { display:flex; justify-content:space-between; font-size:.75rem; opacity:.8; }
+    .card-info strong { display:block; font-size:.88rem; opacity:1; }
+
+    /* PIX block */
+    .pix-block {
+      text-align:center; padding:10px 0 4px;
+    }
+    .pix-qr {
+      width:130px; height:130px;
+      border:3px solid #e0e0e0;
+      border-radius:10px;
+      margin:0 auto 12px;
+      display:flex; align-items:center; justify-content:center;
+      background:#f9f9f9; font-size:3.5rem; color:#ccc;
+    }
+    .pix-chave {
+      background: #f5f5f5;
+      border-radius:8px;
+      padding:10px 14px;
+      font-size:.82rem;
+      color:#555;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:8px;
+    }
+    .pix-chave code { font-size:.78rem; word-break:break-all; color:#333; }
+    .btn-copy {
+      background:var(--nv-green); color:#fff;
+      border:none; border-radius:6px;
+      padding:5px 10px; font-size:.75rem;
+      cursor:pointer; flex-shrink:0;
+      transition:background .2s;
+    }
+    .btn-copy:hover { background:var(--nv-green-dark); }
+
+    /* Boleto block */
+    .boleto-block {
+      background:#fff8e1; border-radius:10px;
+      padding:16px; border:1px dashed #ffc107;
+      text-align:center;
+    }
+    .boleto-code {
+      font-family:monospace; font-size:.78rem;
+      color:#555; background:#fff;
+      border-radius:6px; padding:8px 10px;
+      border:1px solid #eee; margin:10px 0;
+      letter-spacing:1px; word-break:break-all;
+    }
+
+    /* ── Order summary ── */
+    .resumo-item {
+      display:flex; align-items:center; gap:12px;
+      padding:10px 0;
+      border-bottom:1px solid #f0f0f0;
+    }
+    .resumo-item:last-child { border-bottom:none; }
+    .resumo-item img {
+      width:52px; height:52px;
+      object-fit:cover; border-radius:6px;
+      flex-shrink:0;
+    }
+    .resumo-item .nome { font-weight:600; font-size:.88rem; color:#333; margin:0; }
+    .resumo-item .sub  { font-size:.8rem; color:#888; margin:2px 0 0; }
+    .resumo-item .preco { margin-left:auto; font-weight:700; color:var(--nv-green); font-size:.9rem; white-space:nowrap; }
+
+    .totais-linha {
+      display:flex; justify-content:space-between;
+      font-size:.88rem; color:#555; padding:4px 0;
+    }
+    .totais-linha.total-final {
+      font-size:1.1rem; font-weight:700; color:#222;
+      border-top:2px solid #eee; padding-top:10px; margin-top:6px;
+    }
+    .totais-linha .destaque { color:var(--nv-green); font-weight:700; }
+
+    /* Delivery options */
+    .entrega-option {
+      border:2px solid #e0e0e0; border-radius:10px;
+      padding:12px 16px; cursor:pointer;
+      transition:all .2s; display:flex;
+      align-items:center; gap:12px;
+    }
+    .entrega-option:hover { border-color:var(--nv-green); }
+    .entrega-option.selecionado { border-color:var(--nv-green); background:var(--nv-green-light); }
+    .entrega-option input[type="radio"] { display:none; }
+    .entrega-icon {
+      width:36px; height:36px; border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1rem; flex-shrink:0;
+    }
+    .entrega-icon.moto   { background:#e3f2fd; color:#1565c0; }
+    .entrega-icon.pickup { background:#f3e5f5; color:#6a1b9a; }
+    .entrega-title { font-weight:700; font-size:.88rem; color:#333; margin:0; }
+    .entrega-sub   { font-size:.75rem; color:#888; margin:0; }
+    .entrega-preco { margin-left:auto; font-weight:700; color:var(--nv-green); font-size:.88rem; }
+
+    /* ── Buttons ── */
+    .btn-nv {
+      background-color: var(--nv-green);
+      border-color: var(--nv-green);
+      color: #fff; font-weight:600;
+    }
+    .btn-nv:hover, .btn-nv:focus {
+      background-color: var(--nv-green-dark);
+      border-color: var(--nv-green-dark);
+      color: #fff;
+    }
+    .btn-nv-yellow { background:#ffc107; color:#333; font-weight:700; border:none; }
+    .btn-nv-yellow:hover { background:#e0a800; color:#222; }
+
+    /* ── Confirmation screen ── */
+    .confirm-screen {
+      text-align:center; padding:40px 20px;
+    }
+    .confirm-icon {
+      width:90px; height:90px;
+      background: var(--nv-green-light);
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 20px;
+      font-size:2.5rem; color:var(--nv-green);
+      animation: popIn .45s cubic-bezier(.17,.67,.38,1.3);
+    }
+    @keyframes popIn {
+      from { transform:scale(0); opacity:0; }
+      to   { transform:scale(1); opacity:1; }
+    }
+    .confirm-screen h2 { color:var(--nv-green); font-weight:800; font-size:1.6rem; margin-bottom:6px; }
+    .confirm-screen p  { color:#666; font-size:.92rem; }
+    .pedido-num {
+      background:var(--nv-green-light);
+      border-radius:10px; padding:14px 20px;
+      margin:18px auto; max-width:300px;
+    }
+    .pedido-num small { color:#666; font-size:.78rem; display:block; margin-bottom:3px; }
+    .pedido-num strong { color:var(--nv-green); font-size:1.3rem; letter-spacing:1px; }
+
+    /* ── Sticky footer bar ── */
+    .sticky-bar {
+      position:sticky; bottom:0;
+      background:#fff;
+      border-top:1px solid #e0e0e0;
+      padding:12px 20px;
+      box-shadow:0 -2px 12px rgba(0,0,0,.08);
+      z-index:100;
+    }
+
+    /* ── CEP button ── */
+    .btn-cep {
+      background:var(--nv-green); color:#fff;
+      border:none; border-radius:8px;
+      padding:10px 14px; font-size:.82rem;
+      font-weight:700; white-space:nowrap;
+      cursor:pointer; transition:background .2s;
+      height:100%;
+    }
+    .btn-cep:hover { background:var(--nv-green-dark); }
+
+    @media (max-width:576px) {
+      .sec-body { padding:16px; }
+      .confirm-screen { padding:28px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="nv-header shadow-sm">
+  <a href="cliente.html"><img src="imagens/Design_sem_nome.png" alt="Nativus"></a>
+  <span>Finalizar Compra</span>
+</header>
+
+<!-- Steps indicator -->
+<div class="checkout-steps mb-3" id="steps-bar">
+  <div class="cs-item">
+    <div class="cs-circle ativo" id="cs1"><i class="fa-solid fa-truck"></i></div>
+    <span class="cs-label ativo" id="csl1">Entrega</span>
+  </div>
+  <div class="cs-item">
+    <div class="cs-circle" id="cs2"><i class="fa-solid fa-credit-card"></i></div>
+    <span class="cs-label" id="csl2">Pagamento</span>
+  </div>
+  <div class="cs-item">
+    <div class="cs-circle" id="cs3"><i class="fa-solid fa-receipt"></i></div>
+    <span class="cs-label" id="csl3">Revisão</span>
+  </div>
+  <div class="cs-item">
+    <div class="cs-circle" id="cs4"><i class="fa-solid fa-check"></i></div>
+    <span class="cs-label" id="csl4">Confirmado</span>
+  </div>
+</div>
+
+<div class="container pb-5" style="max-width:820px;">
+  <div class="row g-4">
+
+    <!-- ══ LEFT COLUMN: painéis ══ -->
+    <div class="col-lg-7">
+
+      <!-- ─── PAINEL 1: Entrega ─── -->
+      <div class="painel ativo" id="painel-1">
+
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+            <h6>Endereço de entrega</h6>
+          </div>
+          <div class="sec-body">
+            <div class="row g-2 mb-2">
+              <div class="col-8">
+                <label class="form-label">CEP <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="cep" placeholder="00000-000"
+                       maxlength="9" oninput="formatarCEP(this)" inputmode="numeric">
+              </div>
+              <div class="col-4 d-flex align-items-end">
+                <button class="btn-cep w-100"
+                        onclick="buscarCEP(document.getElementById('cep').value)">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i>Buscar
+                </button>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Logradouro</label>
+              <input type="text" class="form-control" id="logradouro" placeholder="Preenchido pelo CEP" readonly>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-8">
+                <label class="form-label">Bairro</label>
+                <input type="text" class="form-control" id="bairro" placeholder="Preenchido pelo CEP" readonly>
+              </div>
+              <div class="col-4">
+                <label class="form-label">Número <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="numero" placeholder="Nº">
+              </div>
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-8">
+                <label class="form-label">Cidade</label>
+                <input type="text" class="form-control" id="cidade" placeholder="Preenchida pelo CEP" readonly>
+              </div>
+              <div class="col-4">
+                <label class="form-label">UF</label>
+                <input type="text" class="form-control" id="uf" placeholder="UF" maxlength="2"
+                       style="text-transform:uppercase" readonly>
+              </div>
+            </div>
+            <div class="mb-0">
+              <label class="form-label">Complemento</label>
+              <input type="text" class="form-control" id="complemento" placeholder="Apto, bloco... (opcional)">
+            </div>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-truck-fast"></i></div>
+            <h6>Forma de entrega</h6>
+          </div>
+          <div class="sec-body d-flex flex-column gap-2">
+            <label class="entrega-option selecionado" onclick="selecionarEntrega(this, 'moto', 8.90)" id="ent-moto">
+              <input type="radio" name="entrega" value="moto" checked>
+              <div class="entrega-icon moto"><i class="fa-solid fa-motorcycle"></i></div>
+              <div>
+                <p class="entrega-title">Entrega Expressa</p>
+                <p class="entrega-sub">Receba hoje • até 2h</p>
+              </div>
+              <span class="entrega-preco">R$ 8,90</span>
+            </label>
+            <label class="entrega-option" onclick="selecionarEntrega(this, 'std', 4.90)" id="ent-std">
+              <input type="radio" name="entrega" value="std">
+              <div class="entrega-icon moto" style="background:#e8f5e9;color:#2e7350;"><i class="fa-solid fa-box"></i></div>
+              <div>
+                <p class="entrega-title">Entrega Padrão</p>
+                <p class="entrega-sub">Receba em 1–2 dias úteis</p>
+              </div>
+              <span class="entrega-preco">R$ 4,90</span>
+            </label>
+            <label class="entrega-option" onclick="selecionarEntrega(this, 'pickup', 0)" id="ent-pickup">
+              <input type="radio" name="entrega" value="pickup">
+              <div class="entrega-icon pickup"><i class="fa-solid fa-store"></i></div>
+              <div>
+                <p class="entrega-title">Retirar na Loja</p>
+                <p class="entrega-sub">Disponível em 30 min</p>
+              </div>
+              <span class="entrega-preco text-success">Grátis</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="sticky-bar">
+          <button class="btn btn-nv w-100 btn-lg" onclick="irPara(2)">
+            Continuar para Pagamento <i class="fa-solid fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL 2: Pagamento ─── -->
+      <div class="painel" id="painel-2">
+
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-wallet"></i></div>
+            <h6>Escolha como pagar</h6>
+          </div>
+          <div class="sec-body d-flex flex-column gap-2">
+
+            <!-- PIX -->
+            <label class="pay-option selecionado" onclick="selecionarPag(this,'pix')" id="pay-pix">
+              <input type="radio" name="pagamento" value="pix" checked>
+              <div class="pay-icon pix"><i class="fa-brands fa-pix"></i></div>
+              <div>
+                <p class="pay-title">PIX</p>
+                <p class="pay-sub">Aprovação instantânea • 5% de desconto</p>
+              </div>
+              <div class="pay-radio-dot"></div>
+            </label>
+
+            <!-- Cartão de crédito -->
+            <label class="pay-option" onclick="selecionarPag(this,'cartao')" id="pay-cartao">
+              <input type="radio" name="pagamento" value="cartao">
+              <div class="pay-icon cartao"><i class="fa-regular fa-credit-card"></i></div>
+              <div>
+                <p class="pay-title">Cartão de Crédito</p>
+                <p class="pay-sub">Em até 3× sem juros</p>
+              </div>
+              <div class="pay-radio-dot"></div>
+            </label>
+
+            <!-- Boleto -->
+            <label class="pay-option" onclick="selecionarPag(this,'boleto')" id="pay-boleto">
+              <input type="radio" name="pagamento" value="boleto">
+              <div class="pay-icon boleto"><i class="fa-solid fa-barcode"></i></div>
+              <div>
+                <p class="pay-title">Boleto Bancário</p>
+                <p class="pay-sub">Vence em 3 dias úteis</p>
+              </div>
+              <div class="pay-radio-dot"></div>
+            </label>
+
+            <!-- Dinheiro -->
+            <label class="pay-option" onclick="selecionarPag(this,'dinheiro')" id="pay-dinheiro">
+              <input type="radio" name="pagamento" value="dinheiro">
+              <div class="pay-icon dinheiro"><i class="fa-solid fa-money-bill-wave"></i></div>
+              <div>
+                <p class="pay-title">Dinheiro na Entrega</p>
+                <p class="pay-sub">Apenas para Entrega Expressa</p>
+              </div>
+              <div class="pay-radio-dot"></div>
+            </label>
+          </div>
+        </div>
+
+        <!-- PIX details -->
+        <div class="sec-card" id="detalhe-pix">
+          <div class="sec-header">
+            <div class="icon" style="background:#1565c0;"><i class="fa-brands fa-pix"></i></div>
+            <h6>Pagar com PIX</h6>
+          </div>
+          <div class="sec-body pix-block">
+            <p class="text-muted small mb-3">Escaneie o QR Code ou copie a chave PIX abaixo para pagar</p>
+            <div class="pix-qr"><i class="fa-solid fa-qrcode"></i></div>
+            <div class="pix-chave">
+              <code id="pix-chave-text">00020126580014BR.GOV.BCB.PIX0136nativus@loja.com.br5204000053039865802BR5920Nativus Org nicos6009SAO PAULO62070503***6304ABCD</code>
+              <button class="btn-copy" onclick="copiarPix()"><i class="fa-solid fa-copy me-1"></i>Copiar</button>
+            </div>
+            <p class="text-success small mt-2 mb-0"><i class="fa-solid fa-circle-check me-1"></i>5% de desconto aplicado no PIX</p>
+          </div>
+        </div>
+
+        <!-- Cartão details -->
+        <div class="sec-card cartao-fields" id="detalhe-cartao">
+          <div class="sec-header">
+            <div class="icon" style="background:#c62828;"><i class="fa-regular fa-credit-card"></i></div>
+            <h6>Dados do Cartão</h6>
+          </div>
+          <div class="sec-body">
+            <!-- Card preview -->
+            <div class="card-preview">
+              <div class="card-chip"><i class="fa-solid fa-microchip"></i></div>
+              <div class="card-number" id="prev-numero">•••• •••• •••• ••••</div>
+              <div class="card-info">
+                <div>
+                  <span>Titular</span>
+                  <strong id="prev-nome">NOME DO TITULAR</strong>
+                </div>
+                <div style="text-align:right;">
+                  <span>Validade</span>
+                  <strong id="prev-validade">MM/AA</strong>
+                </div>
+              </div>
+            </div>
+            <!-- Fields -->
+            <div class="mb-2">
+              <label class="form-label">Número do cartão</label>
+              <input type="text" class="form-control" id="card-num" placeholder="0000 0000 0000 0000"
+                     maxlength="19" oninput="mascaraCartao(this)">
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Nome do titular</label>
+              <input type="text" class="form-control" id="card-nome" placeholder="Como impresso no cartão"
+                     oninput="document.getElementById('prev-nome').textContent=this.value.toUpperCase()||'NOME DO TITULAR'">
+            </div>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label">Validade</label>
+                <input type="text" class="form-control" id="card-val" placeholder="MM/AA"
+                       maxlength="5" oninput="mascaraValidade(this)">
+              </div>
+              <div class="col-6">
+                <label class="form-label">CVV</label>
+                <input type="text" class="form-control" id="card-cvv"
+                       placeholder="•••" maxlength="4" inputmode="numeric"
+                       oninput="this.value=this.value.replace(/\D/g,'')">
+              </div>
+            </div>
+            <div class="mb-0">
+              <label class="form-label">Parcelas</label>
+              <select class="form-select" id="parcelas"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Boleto details -->
+        <div class="sec-card cartao-fields" id="detalhe-boleto">
+          <div class="sec-header">
+            <div class="icon" style="background:#e65100;"><i class="fa-solid fa-barcode"></i></div>
+            <h6>Boleto Bancário</h6>
+          </div>
+          <div class="sec-body">
+            <div class="boleto-block">
+              <i class="fa-solid fa-file-invoice fa-2x mb-2" style="color:#ffa000;"></i>
+              <p class="fw-semibold mb-1" style="font-size:.9rem;">Seu boleto será gerado ao confirmar</p>
+              <p class="text-muted small mb-2">Vence em <strong>3 dias úteis</strong> após a emissão</p>
+              <div class="boleto-code">1234.56789 01234.567890 12345.678901 1 12340000015000</div>
+              <button class="btn btn-sm btn-outline-warning fw-bold" onclick="mostrarToast('Boleto copiado!')">
+                <i class="fa-solid fa-copy me-1"></i>Copiar linha digitável
+              </button>
+            </div>
+            <p class="text-muted small mt-3 mb-0">
+              <i class="fa-solid fa-circle-info me-1"></i>
+              O pedido será confirmado após o pagamento ser identificado (até 3 dias úteis).
+            </p>
+          </div>
+        </div>
+
+        <!-- Dinheiro details -->
+        <div class="sec-card cartao-fields" id="detalhe-dinheiro">
+          <div class="sec-header">
+            <div class="icon" style="background:#6a1b9a;"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <h6>Pagamento na Entrega</h6>
+          </div>
+          <div class="sec-body">
+            <div class="mb-3">
+              <label class="form-label">Precisa de troco para</label>
+              <div class="input-group">
+                <span class="input-group-text">R$</span>
+                <input type="text" class="form-control" id="troco-para"
+                       placeholder="0,00" oninput="formatarPreco(this)" inputmode="numeric">
+              </div>
+              <div class="form-text">Deixe em branco se não precisar de troco</div>
+            </div>
+            <div class="alert alert-warning py-2 small mb-0">
+              <i class="fa-solid fa-triangle-exclamation me-1"></i>
+              Disponível somente para <strong>Entrega Expressa</strong>. O entregador levará o troco.
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-bar d-flex gap-2">
+          <button class="btn btn-outline-secondary px-4" onclick="irPara(1)">
+            <i class="fa-solid fa-arrow-left me-1"></i>Voltar
+          </button>
+          <button class="btn btn-nv flex-fill btn-lg" onclick="irPara(3)">
+            Revisar pedido <i class="fa-solid fa-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL 3: Revisão ─── -->
+      <div class="painel" id="painel-3">
+
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-receipt"></i></div>
+            <h6>Resumo do pedido</h6>
+          </div>
+          <div class="sec-body">
+            <div id="revisao-itens"></div>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+            <h6>Entrega em</h6>
+          </div>
+          <div class="sec-body">
+            <p class="mb-0 text-muted small" id="revisao-endereco">—</p>
+            <p class="mb-0 mt-1 small fw-semibold" id="revisao-entrega-tipo">—</p>
+          </div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-wallet"></i></div>
+            <h6>Forma de pagamento</h6>
+          </div>
+          <div class="sec-body">
+            <p class="mb-0 small fw-semibold" id="revisao-pagamento">—</p>
+          </div>
+        </div>
+
+        <!-- Cupom -->
+        <div class="sec-card">
+          <div class="sec-header">
+            <div class="icon"><i class="fa-solid fa-tag"></i></div>
+            <h6>Cupom de desconto</h6>
+          </div>
+          <div class="sec-body">
+            <div class="input-group">
+              <input type="text" class="form-control text-uppercase" id="cupom-input"
+                     placeholder="Digite o cupom" maxlength="20">
+              <button class="btn btn-nv fw-bold px-3" onclick="aplicarCupom()">
+                <i class="fa-solid fa-check me-1"></i>Aplicar
+              </button>
+            </div>
+            <div class="small mt-2 d-none text-success fw-semibold" id="cupom-ok">
+              <i class="fa-solid fa-circle-check me-1"></i>Cupom <span id="cupom-nome"></span> aplicado!
+            </div>
+            <div class="small mt-2 d-none text-danger fw-semibold" id="cupom-erro">
+              <i class="fa-solid fa-circle-xmark me-1"></i>Cupom inválido ou expirado.
+            </div>
+          </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="sec-card">
+          <div class="sec-body" id="totais-block">
+            <div class="totais-linha"><span>Subtotal</span><span id="tot-subtotal">R$ 0,00</span></div>
+            <div class="totais-linha"><span>Frete</span><span id="tot-frete">R$ 0,00</span></div>
+            <div class="totais-linha d-none" id="tot-desconto-linha">
+              <span class="text-success">Desconto</span>
+              <span class="text-success" id="tot-desconto">- R$ 0,00</span>
+            </div>
+            <div class="totais-linha total-final">
+              <span>Total</span>
+              <span class="destaque" id="tot-total">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-bar d-flex gap-2">
+          <button class="btn btn-outline-secondary px-4" onclick="irPara(2)">
+            <i class="fa-solid fa-arrow-left me-1"></i>Voltar
+          </button>
+          <button class="btn btn-nv-yellow flex-fill btn-lg fw-bold" onclick="confirmarPedido()">
+            <i class="fa-solid fa-lock me-2"></i>Confirmar Pedido
+          </button>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL 4: Confirmação ─── -->
+      <div class="painel" id="painel-4">
+        <div class="sec-card">
+          <div class="confirm-screen">
+            <div class="confirm-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <h2>Pedido Confirmado!</h2>
+            <p class="mb-0">Obrigado pela sua compra na Nativus.<br>
+               Você receberá uma confirmação em breve.</p>
+            <div class="pedido-num">
+              <small>Número do pedido</small>
+              <strong id="num-pedido">#NTV-00000</strong>
+            </div>
+            <p class="text-muted small" id="confirm-entrega-msg">
+              Seu pedido chegará em breve!
+            </p>
+            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-center mt-4">
+              <a href="cliente.html" class="btn btn-nv px-4">
+                <i class="fa-solid fa-cart-shopping me-2"></i>Continuar comprando
+              </a>
+              <a href="arealogin.html" class="btn btn-outline-secondary px-4">
+                <i class="fa-solid fa-user me-2"></i>Minha conta
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /left col -->
+
+    <!-- ══ RIGHT COLUMN: mini resumo fixo ══ -->
+    <div class="col-lg-5 d-none d-lg-block">
+      <div class="sec-card" style="position:sticky;top:20px;">
+        <div class="sec-header">
+          <div class="icon"><i class="fa-solid fa-basket-shopping"></i></div>
+          <h6>Seu carrinho</h6>
+        </div>
+        <div class="sec-body">
+          <div id="sidebar-itens"></div>
+          <hr class="my-2">
+          <div class="totais-linha"><span class="text-muted small">Subtotal</span><span class="small fw-semibold" id="sb-subtotal">R$ 0,00</span></div>
+          <div class="totais-linha"><span class="text-muted small">Frete</span><span class="small fw-semibold" id="sb-frete">—</span></div>
+          <div class="totais-linha total-final"><span>Total</span><span class="destaque" id="sb-total">R$ 0,00</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</div><!-- /container -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="funcoes.js"></script>
+<script>
+// ── State ──
+let painelAtual = 1;
+let freteValor  = 8.90;
+let freteTipo   = 'Entrega Expressa';
+let pagTipo     = 'PIX';
+let desconto    = 0;
+let cupomAplicado = false;
+
+// ── Navigation ──
+function irPara(n) {
+  // Mark previous as done
+  for (let i = 1; i <= 4; i++) {
+    const c = document.getElementById('cs' + i);
+    const l = document.getElementById('csl' + i);
+    c.classList.remove('ativo','feito');
+    l.classList.remove('ativo','feito');
+    if (i < n)       { c.classList.add('feito');  l.classList.add('feito'); }
+    else if (i === n){ c.classList.add('ativo');  l.classList.add('ativo'); }
+  }
+  document.getElementById('painel-' + painelAtual).classList.remove('ativo');
+  painelAtual = n;
+  document.getElementById('painel-' + n).classList.add('ativo');
+  if (n === 3) montarRevisao();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Delivery ──
+function selecionarEntrega(el, tipo, preco) {
+  document.querySelectorAll('.entrega-option').forEach(o => o.classList.remove('selecionado'));
+  el.classList.add('selecionado');
+  freteValor = preco;
+  freteTipo  = el.querySelector('.entrega-title').textContent;
+  atualizarSidebar();
+}
+
+// ── Payment method ──
+function selecionarPag(el, tipo) {
+  document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selecionado'));
+  el.classList.add('selecionado');
+  pagTipo = el.querySelector('.pay-title').textContent;
+
+  // hide all detail blocks
+  ['pix','cartao','boleto','dinheiro'].forEach(t => {
+    const d = document.getElementById('detalhe-' + t);
+    if (d) { d.style.display = 'none'; d.classList.remove('show'); }
+  });
+
+  const alvo = document.getElementById('detalhe-' + tipo);
+  if (alvo) { alvo.style.display = 'block'; alvo.classList.add('show'); }
+
+  // discount pix
+  desconto = tipo === 'pix' ? 1 : 0;
+  atualizarSidebar();
+}
+
+// ── Card masks ──
+function mascaraCartao(input) {
+  let v = input.value.replace(/\D/g,'').slice(0,16);
+  v = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+  input.value = v;
+  document.getElementById('prev-numero').textContent = v || '•••• •••• •••• ••••';
+}
+function mascaraValidade(input) {
+  let v = input.value.replace(/\D/g,'').slice(0,4);
+  if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+  input.value = v;
+  document.getElementById('prev-validade').textContent = v || 'MM/AA';
+}
+
+// ── Instalment options ──
+function preencherParcelas(total) {
+  const sel = document.getElementById('parcelas');
+  if (!sel) return;
+  sel.innerHTML = '';
+  [1,2,3].forEach(n => {
+    const val = (total / n).toFixed(2).replace('.',',');
+    sel.insertAdjacentHTML('beforeend',
+      `<option value="${n}">${n}× de R$ ${val}${n===1?' (à vista)':' sem juros'}</option>`);
+  });
+}
+
+// ── Sidebar ──
+function atualizarSidebar() {
+  const carrinho = getCarrinho();
+  const sub = carrinho.reduce((a, i) => a + i.preco * (i.qty||1), 0);
+  const pixDesc = desconto === 1 ? sub * 0.05 : 0;
+  const total   = sub + freteValor - pixDesc;
+
+  document.getElementById('sb-subtotal').textContent = 'R$ ' + sub.toFixed(2).replace('.',',');
+  document.getElementById('sb-frete').textContent    = freteValor === 0 ? 'Grátis' : 'R$ ' + freteValor.toFixed(2).replace('.',',');
+  document.getElementById('sb-total').textContent    = 'R$ ' + total.toFixed(2).replace('.',',');
+
+  preencherParcelas(total);
+  renderSidebarItens(carrinho);
+}
+
+function renderSidebarItens(carrinho) {
+  const el = document.getElementById('sidebar-itens');
+  if (!el) return;
+  if (!carrinho.length) { el.innerHTML = '<p class="text-muted small text-center py-3">Carrinho vazio</p>'; return; }
+  el.innerHTML = carrinho.map(item => `
+    <div class="resumo-item">
+      <img src="imagens/${item.img}" alt="${item.nome}" onerror="this.src='imagens/Design_sem_nome.png'">
+      <div class="flex-grow-1">
+        <p class="nome">${item.nome}</p>
+        <p class="sub">Qtd: ${item.qty||1}</p>
+      </div>
+      <span class="preco">R$ ${(item.preco*(item.qty||1)).toFixed(2).replace('.',',')}</span>
+    </div>`).join('');
+}
+
+// ── Revisão ──
+function montarRevisao() {
+  const carrinho = getCarrinho();
+  const sub = carrinho.reduce((a,i)=>a+i.preco*(i.qty||1),0);
+  const pixDesc = desconto === 1 ? sub * 0.05 : 0;
+  const total   = sub + freteValor - pixDesc;
+
+  // itens
+  const itensEl = document.getElementById('revisao-itens');
+  itensEl.innerHTML = carrinho.map(item => `
+    <div class="resumo-item">
+      <img src="imagens/${item.img}" alt="${item.nome}" onerror="this.src='imagens/Design_sem_nome.png'">
+      <div class="flex-grow-1">
+        <p class="nome">${item.nome}</p>
+        <p class="sub">Qtd: ${item.qty||1} × R$ ${item.preco.toFixed(2).replace('.',',')}</p>
+      </div>
+      <span class="preco">R$ ${(item.preco*(item.qty||1)).toFixed(2).replace('.',',')}</span>
+    </div>`).join('');
+
+  // address
+  const cep  = document.getElementById('cep').value;
+  const rua  = document.getElementById('logradouro').value;
+  const num  = document.getElementById('numero').value;
+  const bai  = document.getElementById('bairro').value;
+  const cid  = document.getElementById('cidade').value;
+  const uf   = document.getElementById('uf').value;
+  const comp = document.getElementById('complemento').value;
+  let endStr = rua ? `${rua}, ${num}${comp?' - '+comp:''} — ${bai}, ${cid}/${uf} • CEP: ${cep}` : 'Endereço não preenchido';
+  document.getElementById('revisao-endereco').textContent = endStr;
+  document.getElementById('revisao-entrega-tipo').textContent =
+    freteTipo + (freteValor===0 ? ' (Grátis)' : ` — R$ ${freteValor.toFixed(2).replace('.',',')} `);
+
+  document.getElementById('revisao-pagamento').textContent = pagTipo;
+
+  // totals
+  document.getElementById('tot-subtotal').textContent = 'R$ ' + sub.toFixed(2).replace('.',',');
+  document.getElementById('tot-frete').textContent    = freteValor===0 ? 'Grátis' : 'R$ ' + freteValor.toFixed(2).replace('.',',');
+
+  const dEl = document.getElementById('tot-desconto-linha');
+  if (pixDesc > 0) {
+    dEl.classList.remove('d-none');
+    document.getElementById('tot-desconto').textContent = '- R$ ' + pixDesc.toFixed(2).replace('.',',');
+  } else { dEl.classList.add('d-none'); }
+
+  document.getElementById('tot-total').textContent = 'R$ ' + total.toFixed(2).replace('.',',');
+}
+
+// ── Coupon ──
+const CUPONS = { 'NATIVUS10': 10, 'VERDE5': 5, 'BEMVINDO': 15 };
+function aplicarCupom() {
+  const cod = document.getElementById('cupom-input').value.trim().toUpperCase();
+  const okEl  = document.getElementById('cupom-ok');
+  const errEl = document.getElementById('cupom-erro');
+  okEl.classList.add('d-none'); errEl.classList.add('d-none');
+  if (!cod) return;
+  if (cupomAplicado) { mostrarToast('Já existe um cupom aplicado.','erro'); return; }
+  if (CUPONS[cod]) {
+    cupomAplicado = true;
+    desconto += CUPONS[cod] / 100;
+    document.getElementById('cupom-nome').textContent = cod + ' (' + CUPONS[cod] + '% off)';
+    okEl.classList.remove('d-none');
+    montarRevisao();
+  } else {
+    errEl.classList.remove('d-none');
+  }
+}
+
+// ── Confirm ──
+function confirmarPedido() {
+  const num = 'NTV-' + Math.floor(10000 + Math.random() * 90000);
+  document.getElementById('num-pedido').textContent = '#' + num;
+  const msgs = {
+    'Entrega Expressa':'Sua entrega chegará em até 2 horas!',
+    'Entrega Padrão':'Sua entrega chegará em 1–2 dias úteis.',
+    'Retirar na Loja':'Seu pedido estará pronto para retirada em 30 minutos.'
+  };
+  document.getElementById('confirm-entrega-msg').textContent = msgs[freteTipo] || 'Em breve você receberá mais informações.';
+  // Clear cart
+  salvarCarrinho([]);
+  irPara(4);
+}
+
+// ── Copy PIX ──
+function copiarPix() {
+  const txt = document.getElementById('pix-chave-text').textContent;
+  navigator.clipboard.writeText(txt).then(() => mostrarToast('Chave PIX copiada!')).catch(()=>{});
+}
+
+// ── Init ──
+document.addEventListener('DOMContentLoaded', () => {
+  // Show pix by default, hide others
+  ['cartao','boleto','dinheiro'].forEach(t => {
+    const d = document.getElementById('detalhe-' + t);
+    if (d) d.style.display = 'none';
+  });
+  atualizarSidebar();
+});
+</script>
+</body>
+</html>
