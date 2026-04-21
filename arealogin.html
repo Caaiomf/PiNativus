@@ -106,14 +106,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const tipo = document.getElementById('tipo').value;
-      if      (tipo === 'cliente')    window.location.href = 'cliente.html';
-      else if (tipo === 'funcionario') window.location.href = 'funcionario.html';
-      else alert('Por favor, selecione um tipo de usuário.');
-    });
-  </script>
+  <script src="funcoes.js"></script>
 </body>
 </html>

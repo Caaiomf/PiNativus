@@ -338,28 +338,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="funcoes.js"></script>
-<script>
-  function toggleFavorito(el) { el.classList.toggle('ativo'); }
-
-  function filtrarProdutos(termo) {
-    if (!termo && termo !== '') {
-      termo = document.getElementById('pesquisa') ?
-              document.getElementById('pesquisa').value.toLowerCase() : '';
-    } else {
-      termo = termo.toLowerCase();
-    }
-    let visiveis = 0;
-    document.querySelectorAll('.produto-item').forEach(card => {
-      const nome = card.getAttribute('data-nome').toLowerCase();
-      const v = nome.includes(termo);
-      card.style.display = v ? '' : 'none';
-      if (v) visiveis++;
-    });
-    const sr = document.getElementById('sem-resultado');
-    if (sr) sr.classList.toggle('d-none', visiveis !== 0);
-  }
-
-  document.addEventListener('DOMContentLoaded', atualizarBadgeCarrinho);
-</script>
 </body>
 </html>

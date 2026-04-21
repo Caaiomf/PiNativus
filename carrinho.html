@@ -107,53 +107,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="funcoes.js"></script>
-<script>
-  function renderizarCarrinhoCom() {
-    const lista   = document.getElementById('lista-carrinho');
-    const totalEl = document.getElementById('total-carrinho');
-    if (!lista) return;
-    const carrinho = getCarrinho();
-    lista.innerHTML = '';
-    if (carrinho.length === 0) {
-      lista.innerHTML = `
-        <div class="text-center py-5 text-muted">
-          <i class="fa-solid fa-cart-shopping fa-3x mb-3 opacity-25"></i>
-          <p class="fs-5">Seu carrinho está vazio.</p>
-          <a href="cliente.html" class="btn btn-nv mt-2" style="background:var(--nv-green);color:#fff;">Ver produtos</a>
-        </div>`;
-      if (totalEl) totalEl.textContent = 'Total: R$ 0,00';
-      return;
-    }
-    let total = 0;
-    carrinho.forEach((item, i) => {
-      const qty = item.qty || 1;
-      const sub = item.preco * qty;
-      total += sub;
-      lista.insertAdjacentHTML('beforeend', `
-        <div class="item-card p-3 d-flex justify-content-between align-items-center gap-3">
-          <div class="d-flex align-items-center gap-3 flex-grow-1">
-            <img src="imagens/${item.img}" alt="${item.nome}"
-                 onerror="this.src='imagens/Design_sem_nome.png'">
-            <div>
-              <p class="item-nome">${item.nome}</p>
-              <p class="item-preco">R$ ${item.preco.toFixed(2).replace('.', ',')} / unidade</p>
-              <div class="d-flex align-items-center gap-2 mt-1">
-                <button class="qty-btn" onclick="alterarQty(${i}, -1)">−</button>
-                <span class="qty-num">${qty}</span>
-                <button class="qty-btn" onclick="alterarQty(${i}, +1)">+</button>
-              </div>
-              <p class="item-sub">Subtotal: R$ ${sub.toFixed(2).replace('.', ',')}</p>
-            </div>
-          </div>
-          <button class="btn btn-danger btn-sm" onclick="removerDoCarrinho(${i})" title="Remover">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </div>`);
-    });
-    if (totalEl) totalEl.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
-  }
-
-  document.addEventListener('DOMContentLoaded', renderizarCarrinhoCom);
-</script>
 </body>
 </html>
