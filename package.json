@@ -1,0 +1,27 @@
+{
+  "name": "pinativus-node",
+  "version": "1.0.0",
+  "description": "Mercado Nativus em Node.js, Express, sessoes, cookies e Bootstrap.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "test": "echo \"Sem testes automatizados\" && exit 0"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "bootstrap",
+    "cookies",
+    "session"
+  ],
+  "author": "Caio Matheus Favarao",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "multer": "^2.1.1"
+  }
+}
