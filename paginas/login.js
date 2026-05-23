@@ -36,7 +36,7 @@ export function renderLogin(req, erro = "") {
           <p class="text-center mt-3 mb-0">Nao tem conta? <a href="/cadastro">Cadastre-se</a></p>
           <div class="alert alert-light border mt-3 small mb-0">
             Funcionario inicial: <strong>funcionario@nativus.com.br</strong><br>
-            Senha: <strong>Nativus@123</strong>
+            Senha: <strong>admin</strong>
           </div>
         </div>
       </div>

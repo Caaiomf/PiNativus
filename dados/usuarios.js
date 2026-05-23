@@ -28,7 +28,7 @@ export async function carregarUsuarios() {
       id: usuario.id || crypto.randomUUID(),
       nome: usuario.nome || usuario.name || "Usuario",
       tipo: usuario.tipo || usuario.role || "cliente",
-      senha: usuario.senha || usuario.password || (usuario.email === "funcionario@nativus.com.br" ? "Nativus@123" : "123456")
+      senha: usuario.senha || usuario.password || (usuario.email === "funcionario@nativus.com.br" ? "admin" : "123456")
     }))
     .filter((usuario) => usuario.email && usuario.senha);
 
@@ -37,7 +37,7 @@ export async function carregarUsuarios() {
       id: crypto.randomUUID(),
       nome: "Funcionario Nativus",
       email: "funcionario@nativus.com.br",
-      senha: "Nativus@123",
+      senha: "admin",
       tipo: "funcionario"
     });
   }

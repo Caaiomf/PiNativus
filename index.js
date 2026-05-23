@@ -35,7 +35,7 @@ const uploadProduto = multer({
     },
     filename(req, file, cb) {
       const extensao = path.extname(file.originalname).toLowerCase();
-      const nomeBase = path.basename(file.originalname, extensao)
+      const nomeBase = String(req.body.nome || "produto")
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
