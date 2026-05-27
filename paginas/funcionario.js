@@ -94,19 +94,14 @@ export function renderCadastroProduto(req, erro = "") {
 export function renderListaProdutos(req) {
   const linhas = produtos.map((produto) => `
     <tr>
+      <td class="text-center">
+        <input class="form-check-input produto-check" type="checkbox" name="ids" value="${escapar(produto.id)}" aria-label="Selecionar ${escapar(produto.nome)}">
+      </td>
       <td>${escapar(produto.nome)}</td>
       <td>${escapar(produto.categoria)}</td>
       <td>${dinheiro(produto.preco)}</td>
       <td>${escapar(produto.unidade)}</td>
       <td>${escapar(produto.imagem)}</td>
-      <td class="text-end">
-        <form method="POST" action="/produto/remover" onsubmit="return confirm('Apagar este produto?');">
-          <input type="hidden" name="id" value="${escapar(produto.id)}">
-          <button class="btn btn-outline-danger btn-sm" type="submit">
-            <i class="bi bi-trash"></i> Apagar
-          </button>
-        </form>
-      </td>
     </tr>`).join("");
 
   return layout(req, "Lista Produtos", `
@@ -115,20 +110,68 @@ export function renderListaProdutos(req) {
         <h1 class="h3 text-success fw-bold mb-0">Produtos cadastrados</h1>
         <a class="btn btn-success" href="/cadastroProduto">Novo produto</a>
       </div>
-      <div class="table-responsive shadow-sm rounded">
-        <table class="table table-striped table-hover align-middle bg-white">
-          <thead class="table-success">
-            <tr>
-              <th>Nome</th>
-              <th>Categoria</th>
-              <th>Preco</th>
-              <th>Unidade</th>
-              <th>Imagem</th>
-              <th class="text-end">Acoes</th>
-            </tr>
-          </thead>
-          <tbody>${linhas}</tbody>
-        </table>
-      </div>
+      <div id="mensagemSelecao" class="alert alert-warning py-2 d-none">Selecione pelo menos um produto para excluir.</div>
+      <form method="POST" action="/produtos/removerSelecionados" id="formExcluirProdutos">
+        <div class="table-responsive shadow-sm rounded">
+          <table class="table table-striped table-hover align-middle bg-white">
+            <thead class="table-success">
+              <tr>
+                <th class="text-center" style="width:52px;">
+                  <input class="form-check-input" type="checkbox" id="selecionarTodos" aria-label="Selecionar todos os produtos">
+                </th>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Preco</th>
+                <th>Unidade</th>
+                <th>Imagem</th>
+              </tr>
+            </thead>
+            <tbody>${linhas || `<tr><td colspan="6" class="text-center text-muted py-4">Nenhum produto cadastrado.</td></tr>`}</tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-outline-danger" id="btnExcluirSelecionados" type="submit" disabled>
+            <i class="bi bi-trash"></i> Excluir selecionados
+          </button>
+        </div>
+      </form>
+      <script>
+        const formExcluirProdutos = document.getElementById("formExcluirProdutos");
+        const selecionarTodos = document.getElementById("selecionarTodos");
+        const checksProdutos = Array.from(document.querySelectorAll(".produto-check"));
+        const btnExcluirSelecionados = document.getElementById("btnExcluirSelecionados");
+        const mensagemSelecao = document.getElementById("mensagemSelecao");
+
+        function quantidadeSelecionada() {
+          return checksProdutos.filter((check) => check.checked).length;
+        }
+
+        function atualizarEstadoSelecao() {
+          const qtd = quantidadeSelecionada();
+          btnExcluirSelecionados.disabled = qtd === 0;
+          btnExcluirSelecionados.innerHTML = qtd
+            ? '<i class="bi bi-trash"></i> Excluir ' + qtd + ' selecionado(s)'
+            : '<i class="bi bi-trash"></i> Excluir selecionados';
+          if (selecionarTodos) {
+            selecionarTodos.checked = checksProdutos.length > 0 && qtd === checksProdutos.length;
+            selecionarTodos.indeterminate = qtd > 0 && qtd < checksProdutos.length;
+          }
+          if (qtd > 0) mensagemSelecao.classList.add("d-none");
+        }
+
+        selecionarTodos?.addEventListener("change", () => {
+          checksProdutos.forEach((check) => { check.checked = selecionarTodos.checked; });
+          atualizarEstadoSelecao();
+        });
+
+        checksProdutos.forEach((check) => check.addEventListener("change", atualizarEstadoSelecao));
+
+        formExcluirProdutos.addEventListener("submit", (evento) => {
+          if (!quantidadeSelecionada()) {
+            evento.preventDefault();
+            mensagemSelecao.classList.remove("d-none");
+          }
+        });
+      </script>
     </main>`);
 }

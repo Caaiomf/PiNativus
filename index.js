@@ -139,13 +139,21 @@ server.post("/cadastro", async (req, res) => {
     email: String(req.body.email || "").trim().toLowerCase(),
     nascimento: String(req.body.nascimento || "").trim(),
     telefone: String(req.body.telefone || "").trim(),
+    tipoPessoa: req.body.tipoPessoa === "juridica" ? "juridica" : "fisica",
     cpf: String(req.body.cpf || "").trim(),
+    cnpj: String(req.body.cnpj || "").trim(),
     cep: String(req.body.cep || "").trim(),
     endereco: String(req.body.endereco || "").trim(),
     numero: String(req.body.numero || "").trim(),
+    complemento: String(req.body.complemento || "").trim(),
     bairro: String(req.body.bairro || "").trim(),
     cidade: String(req.body.cidade || "").trim(),
     uf: String(req.body.uf || "").trim(),
+    referencia: String(req.body.referencia || "").trim(),
+    contatoPreferido: String(req.body.contatoPreferido || "").trim(),
+    observacoes: String(req.body.observacoes || "").trim(),
+    receberOfertas: req.body.receberOfertas === "sim" ? "sim" : "nao",
+    aceitarTermos: req.body.aceitarTermos === "sim" ? "sim" : "nao",
     senha: String(req.body.senha || ""),
     confirmarSenha: String(req.body.confirmarSenha || "")
   };
@@ -163,13 +171,21 @@ server.post("/cadastro", async (req, res) => {
     email: dados.email,
     nascimento: dados.nascimento,
     telefone: somenteDigitos(dados.telefone),
+    tipoPessoa: dados.tipoPessoa,
     cpf: somenteDigitos(dados.cpf),
+    cnpj: somenteDigitos(dados.cnpj),
     cep: somenteDigitos(dados.cep),
     endereco: dados.endereco,
     numero: dados.numero,
+    complemento: dados.complemento,
     bairro: dados.bairro,
     cidade: dados.cidade,
     uf: dados.uf,
+    referencia: dados.referencia,
+    contatoPreferido: dados.contatoPreferido,
+    observacoes: dados.observacoes,
+    receberOfertas: dados.receberOfertas,
+    aceitarTermos: dados.aceitarTermos,
     senha: dados.senha,
     tipo: "cliente"
   };
@@ -278,6 +294,17 @@ server.post("/cadastroProduto", verificarFuncionario, receberImagemProduto, (req
 
 server.post("/produto/remover", verificarFuncionario, (req, res) => {
   removerProduto(String(req.body.id || ""));
+  res.redirect("/listaProdutos");
+});
+
+server.post("/produtos/removerSelecionados", verificarFuncionario, (req, res) => {
+  const idsRecebidos = Array.isArray(req.body.ids)
+    ? req.body.ids
+    : req.body.ids
+      ? [req.body.ids]
+      : [];
+
+  idsRecebidos.map(String).forEach((id) => removerProduto(id));
   res.redirect("/listaProdutos");
 });
 
