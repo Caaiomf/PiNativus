@@ -18,12 +18,15 @@ export function validarCPF(cpf) {
 }
 
 export function validarCNPJ(cnpj) {
-  cnpj = somenteDigitos(cnpj);
-  if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) return false;
+  cnpj = String(cnpj || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (cnpj.length !== 14 || /^([A-Z0-9])\1{13}$/.test(cnpj)) return false;
+  if (!/^[A-Z0-9]{12}\d{2}$/.test(cnpj)) return false;
+
+  const valorCaracter = (caracter) => caracter.charCodeAt(0) - 48;
 
   const calcularDigito = (tamanho, pesos) => {
     let soma = 0;
-    for (let i = 0; i < tamanho; i++) soma += Number(cnpj[i]) * pesos[i];
+    for (let i = 0; i < tamanho; i++) soma += valorCaracter(cnpj[i]) * pesos[i];
     const resto = soma % 11;
     return resto < 2 ? 0 : 11 - resto;
   };
@@ -38,7 +41,7 @@ export function validarCadastro(dados, usuarios) {
   const erros = {};
   const telefoneDigitos = somenteDigitos(dados.telefone);
   const cpfDigitos = somenteDigitos(dados.cpf);
-  const cnpjDigitos = somenteDigitos(dados.cnpj);
+  const cnpjNormalizado = String(dados.cnpj || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
   const cepDigitos = somenteDigitos(dados.cep);
   const contatosValidos = ["whatsapp", "email", "telefone"];
   const tiposPessoaValidos = ["fisica", "juridica"];
@@ -48,7 +51,7 @@ export function validarCadastro(dados, usuarios) {
   if (usuarios.some((u) => u.email === String(dados.email || "").toLowerCase())) erros.email = "Este e-mail ja esta cadastrado.";
   if (!tiposPessoaValidos.includes(dados.tipoPessoa)) erros.tipoPessoa = "Selecione o tipo de pessoa.";
   if (dados.tipoPessoa === "fisica" && !validarCPF(cpfDigitos)) erros.cpf = "Informe um CPF valido.";
-  if (dados.tipoPessoa === "juridica" && !validarCNPJ(cnpjDigitos)) erros.cnpj = "Informe um CNPJ valido.";
+  if (dados.tipoPessoa === "juridica" && !validarCNPJ(cnpjNormalizado)) erros.cnpj = "Informe um CNPJ valido.";
   if (!dados.nascimento) erros.nascimento = "Informe a data de nascimento.";
   else if (dados.nascimento > hojeISO()) erros.nascimento = "A data de nascimento nao pode ser maior que hoje.";
   if (![10, 11].includes(telefoneDigitos.length)) erros.telefone = "Informe um telefone com DDD.";

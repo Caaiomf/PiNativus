@@ -10,7 +10,7 @@ export function renderIndex(req) {
       <div class="card h-100 border-0 shadow-sm">
         <img src="/imagens/${escapar(produto.imagem)}" alt="${escapar(produto.nome)}" class="card-img-top bg-white" style="height:190px;object-fit:contain;padding:1rem;">
         <div class="card-body d-flex flex-column text-center">
-          <span class="badge text-bg-success-subtle text-success align-self-center mb-2">Organico</span>
+          <span class="badge text-bg-success-subtle text-success align-self-center mb-2">${escapar(produto.categoria)}</span>
           <h2 class="h6 card-title">${escapar(produto.nome)}</h2>
           <p class="text-success fw-bold mb-3">${dinheiro(produto.preco)} / ${escapar(produto.unidade)}</p>
           <form method="POST" action="/carrinho/adicionar" class="d-flex gap-2 mt-auto">

@@ -173,7 +173,7 @@ server.post("/cadastro", async (req, res) => {
     telefone: somenteDigitos(dados.telefone),
     tipoPessoa: dados.tipoPessoa,
     cpf: somenteDigitos(dados.cpf),
-    cnpj: somenteDigitos(dados.cnpj),
+    cnpj: String(dados.cnpj || "").toUpperCase().replace(/[^A-Z0-9]/g, ""),
     cep: somenteDigitos(dados.cep),
     endereco: dados.endereco,
     numero: dados.numero,

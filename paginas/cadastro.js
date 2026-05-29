@@ -68,8 +68,8 @@ export function renderCadastro(req, dados = {}, erros = {}) {
             </div>
             <div class="col-md-4 ${tipoPessoaAtual === "fisica" ? "d-none" : ""}" id="grupoCnpj">
               <label class="form-label" for="cnpj">CNPJ</label>
-              <input class="${campoClass(erros, "cnpj")}" id="cnpj" name="cnpj" value="${valor("cnpj")}" placeholder="00.000.000/0000-00" inputmode="numeric" maxlength="18" ${tipoPessoaAtual === "juridica" ? "required" : ""}>
-              <div class="form-text">Obrigatorio para pessoa juridica.</div>
+              <input class="${campoClass(erros, "cnpj")}" id="cnpj" name="cnpj" value="${valor("cnpj")}" placeholder="12.ABC.345/01DE-35" maxlength="18" ${tipoPessoaAtual === "juridica" ? "required" : ""}>
+              <div class="form-text">Aceita o formato numerico atual ou o novo alfanumerico.</div>
               ${erroCampo(erros, "cnpj")}
             </div>
             <div class="col-md-4">
@@ -148,6 +148,7 @@ export function renderCadastro(req, dados = {}, erros = {}) {
     <script>
       const formCadastro = document.getElementById("formCadastro");
       const apenasNumeros = (valor) => valor.replace(/\\D/g, "");
+      const apenasCNPJ = (valor) => valor.toUpperCase().replace(/[^A-Z0-9]/g, "");
       const alertaCadastro = document.createElement("div");
       alertaCadastro.className = "alert alert-warning py-2 d-none";
       formCadastro.prepend(alertaCadastro);
@@ -182,12 +183,15 @@ export function renderCadastro(req, dados = {}, erros = {}) {
         campo.value = v;
       }
       function mascaraCNPJ(campo) {
-        let v = apenasNumeros(campo.value).slice(0, 14);
-        v = v.replace(/(\\d{2})(\\d)/, "$1.$2")
-             .replace(/(\\d{2})\\.(\\d{3})(\\d)/, "$1.$2.$3")
-             .replace(/(\\d{2})\\.(\\d{3})\\.(\\d{3})(\\d)/, "$1.$2.$3/$4")
-             .replace(/(\\d{2})\\.(\\d{3})\\.(\\d{3})\\/(\\d{4})(\\d{1,2})$/, "$1.$2.$3/$4-$5");
-        campo.value = v;
+        const v = apenasCNPJ(campo.value).slice(0, 14);
+        const partes = [];
+        if (v.length > 0) partes.push(v.slice(0, 2));
+        if (v.length > 2) partes.push(v.slice(2, 5));
+        if (v.length > 5) partes.push(v.slice(5, 8));
+        let formatado = partes.join(".");
+        if (v.length > 8) formatado += "/" + v.slice(8, 12);
+        if (v.length > 12) formatado += "-" + v.slice(12, 14);
+        campo.value = formatado;
       }
       function validarCPFCliente(valor) {
         const cpf = apenasNumeros(valor);
@@ -204,13 +208,15 @@ export function renderCadastro(req, dados = {}, erros = {}) {
         return digito === Number(cpf[10]);
       }
       function validarCNPJCliente(valor) {
-        const cnpj = apenasNumeros(valor);
-        if (cnpj.length !== 14 || /^(\\d)\\1{13}$/.test(cnpj)) return false;
+        const cnpj = apenasCNPJ(valor);
+        if (cnpj.length !== 14 || /^([A-Z0-9])\\1{13}$/.test(cnpj)) return false;
+        if (!/^[A-Z0-9]{12}\\d{2}$/.test(cnpj)) return false;
         const pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
         const pesos2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        const valorCaracter = (caracter) => caracter.charCodeAt(0) - 48;
         const calcular = (tamanho, pesos) => {
           let soma = 0;
-          for (let i = 0; i < tamanho; i++) soma += Number(cnpj[i]) * pesos[i];
+          for (let i = 0; i < tamanho; i++) soma += valorCaracter(cnpj[i]) * pesos[i];
           const resto = soma % 11;
           return resto < 2 ? 0 : 11 - resto;
         };
@@ -265,7 +271,7 @@ export function renderCadastro(req, dados = {}, erros = {}) {
       document.getElementById("telefone").addEventListener("input", (e) => mascaraTelefone(e.target));
       document.getElementById("cnpj").addEventListener("input", (e) => {
         mascaraCNPJ(e.target);
-        if (apenasNumeros(e.target.value).length === 14) definirErro(e.target, validarCNPJCliente(e.target.value) ? "" : "Informe um CNPJ valido.");
+        if (apenasCNPJ(e.target.value).length === 14) definirErro(e.target, validarCNPJCliente(e.target.value) ? "" : "Informe um CNPJ valido.");
       });
       function atualizarDocumentoVisivel() {
         const tipoPessoa = document.getElementById("tipoPessoa");
@@ -281,7 +287,7 @@ export function renderCadastro(req, dados = {}, erros = {}) {
           cnpj.required = true;
           cpf.value = "";
           definirErro(cpf, "");
-          if (!apenasNumeros(cnpj.value)) definirErro(cnpj, "Informe o CNPJ para pessoa juridica.");
+          if (!apenasCNPJ(cnpj.value)) definirErro(cnpj, "Informe o CNPJ para pessoa juridica.");
         } else {
           grupoCnpj.classList.add("d-none");
           grupoCpf.classList.remove("d-none");
@@ -299,7 +305,7 @@ export function renderCadastro(req, dados = {}, erros = {}) {
         if (apenasNumeros(e.target.value).length === 11) {
           if (!validarCPFCliente(e.target.value)) {
             definirErro(e.target, "Informe um CPF valido.");
-            mostrarAlertaCadastro("Este CPF vai dar erro: informe um CPF valido.");
+            mostrarAlertaCadastro("Informe um CPF valido.");
           } else {
             definirErro(e.target, "");
             ocultarAlertaCadastro();
